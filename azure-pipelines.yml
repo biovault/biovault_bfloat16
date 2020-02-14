@@ -1,0 +1,47 @@
+jobs:
+- job: VS2019
+  pool:
+    vmImage: 'windows-2019'
+  steps:
+  - script: |
+      call "C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\VC\Auxiliary\Build\vcvars64.bat"
+      mkdir build
+      cd build
+      cmake .. -G "Visual Studio 16 2019" -A x64
+      MSBuild.exe ..\build\biovault_bfloat16.sln /property:Configuration=Release
+      cd ..
+    displayName: VS2019 Build!
+  - script: |
+      .\build\Release\biovault_bfloat16_test.exe
+    displayName: Run it!
+
+- job: Ubuntu1804_GCC_7_4_0
+  pool:
+    vmImage: 'ubuntu-18.04'
+  steps:
+  - script: |
+      mkdir build
+      cd build
+      cmake ..
+      make
+      cd ..
+    displayName: GCC build
+  - script: |
+      ./build/biovault_bfloat16_test
+    displayName: GCC run
+   
+- job: macOS1014_AppleClang_11_0_0_11000033
+  pool:
+    vmImage: 'macOS-10.14'
+  steps:
+  - script: |
+      mkdir build
+      cd build
+      cmake ..
+      make
+      cd ..
+    displayName: Clang build macOS-10.14
+  - script: |
+      ./build/biovault_bfloat16_test
+    displayName: Run!
+
