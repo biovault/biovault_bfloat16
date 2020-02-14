@@ -26,9 +26,12 @@
 
 namespace biovault {
 
-	struct bfloat16_t {
+	class bfloat16_t {
 
+	private:
 		uint16_t raw_bits_;
+
+	public:
 		bfloat16_t() = default;
 		constexpr bfloat16_t(uint16_t r, bool) : raw_bits_(r) {}
 		bfloat16_t(float f) { (*this) = f; }

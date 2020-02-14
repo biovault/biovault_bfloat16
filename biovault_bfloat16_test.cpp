@@ -71,7 +71,9 @@ namespace
 
 	std::uint16_t get_raw_bits_of_bfloat16(const biovault::bfloat16_t arg)
 	{
-		return arg.raw_bits_;
+		std::uint16_t raw_bits;
+		std::memcpy(&raw_bits, &arg, sizeof(std::uint16_t));
+		return raw_bits;
 	}
 
 
@@ -326,7 +328,7 @@ GTEST_TEST(bfloat16, RawRoundTrip)
 				// (depending on compiler version and compilation flags).
 
 				ASSERT_TRUE(float_category == FP_NAN);
-				ASSERT_EQ(roundtripped_bfloat.raw_bits_, i + _64);
+				ASSERT_EQ(get_raw_bits_of_bfloat16(roundtripped_bfloat), i + _64);
 			}
 			else
 			{
