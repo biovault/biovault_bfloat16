@@ -34,21 +34,8 @@ namespace biovault {
 	public:
 		bfloat16_t() = default;
 		constexpr bfloat16_t(uint16_t r, bool) : raw_bits_(r) {}
-		bfloat16_t(float f) { (*this) = f; }
 
-		bfloat16_t &operator=(float f);
-
-		operator float() const;
-
-		bfloat16_t &operator+=(bfloat16_t a) {
-			(*this) = (float)(*this) + (float)a;
-			return *this;
-		}
-	};
-
-	static_assert(sizeof(bfloat16_t) == 2, "bfloat16_t must be 2 bytes");
-
-	inline bfloat16_t &bfloat16_t::operator=(const float f) {
+		bfloat16_t(float f) {
 			uint16_t iraw[2];
 			std::memcpy(iraw, &f, sizeof(float));
 
@@ -74,9 +61,18 @@ namespace biovault {
 				std::memcpy(iraw, &int_raw, sizeof(float));
 				raw_bits_ = iraw[1];
 				break;
+			}
 		}
-		return *this;
-	}
+
+		operator float() const;
+
+		bfloat16_t &operator+=(bfloat16_t a) {
+			(*this) = (float)(*this) + (float)a;
+			return *this;
+		}
+	};
+
+	static_assert(sizeof(bfloat16_t) == 2, "bfloat16_t must be 2 bytes");
 
 	inline bfloat16_t::operator float() const {
 		const uint16_t iraw[2] = { 0, raw_bits_ };
