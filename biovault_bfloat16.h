@@ -33,6 +33,7 @@ namespace biovault {
 
 	public:
 		bfloat16_t() = default;
+
 		constexpr bfloat16_t(const std::uint16_t r, bool) : raw_bits_(r) {}
 
 		// Supports narrowing (lossy) conversion from 32-bit float to bfloat16.
@@ -65,7 +66,12 @@ namespace biovault {
 			}
 		}
 
-		operator float() const;
+		operator float() const {
+			const std::uint16_t iraw[2] = { 0, raw_bits_ };
+			float f;
+			std::memcpy(&f, iraw, sizeof(float));
+			return f;
+		}
 
 		bfloat16_t &operator+=(const bfloat16_t a) {
 			(*this) = bfloat16_t{ float{*this} + float{a} };
@@ -74,12 +80,5 @@ namespace biovault {
 	};
 
 	static_assert(sizeof(bfloat16_t) == 2, "bfloat16_t must be 2 bytes");
-
-	inline bfloat16_t::operator float() const {
-		const std::uint16_t iraw[2] = { 0, raw_bits_ };
-		float f;
-		std::memcpy(&f, iraw, sizeof(float));
-		return f;
-	}
 
 }
