@@ -18,7 +18,7 @@
 // which is licensed under the Apache License, Version 2.0:
 // https://github.com/intel/mkl-dnn/blob/v1.2/LICENSE
 
-#include <cinttypes>
+#include <cstdint> // For std::uint16_t
 #include <cmath>
 #include <cfloat>
 #include <cstring>
@@ -29,14 +29,14 @@ namespace biovault {
 	class bfloat16_t {
 
 	private:
-		uint16_t raw_bits_;
+		std::uint16_t raw_bits_;
 
 	public:
 		bfloat16_t() = default;
-		constexpr bfloat16_t(const uint16_t r, bool) : raw_bits_(r) {}
+		constexpr bfloat16_t(const std::uint16_t r, bool) : raw_bits_(r) {}
 
 		bfloat16_t(const float f) {
-			uint16_t iraw[2];
+			std::uint16_t iraw[2];
 			std::memcpy(iraw, &f, sizeof(float));
 
 			switch (std::fpclassify(f)) {
@@ -54,8 +54,8 @@ namespace biovault {
 				break;
 			case FP_NORMAL:
 				// round to nearest even and truncate
-				const unsigned int rounding_bias = 0x00007FFF + (iraw[1] & 0x1);
-				uint32_t int_raw;
+				const std::uint32_t rounding_bias = 0x00007FFF + (iraw[1] & 0x1);
+				std::uint32_t int_raw;
 				std::memcpy(&int_raw, &f, sizeof(float));
 				int_raw += rounding_bias;
 				std::memcpy(iraw, &int_raw, sizeof(float));
@@ -75,7 +75,7 @@ namespace biovault {
 	static_assert(sizeof(bfloat16_t) == 2, "bfloat16_t must be 2 bytes");
 
 	inline bfloat16_t::operator float() const {
-		const uint16_t iraw[2] = { 0, raw_bits_ };
+		const std::uint16_t iraw[2] = { 0, raw_bits_ };
 		float f;
 		std::memcpy(&f, iraw, sizeof(float));
 		return f;
