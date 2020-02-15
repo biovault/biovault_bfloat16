@@ -33,9 +33,9 @@ namespace biovault {
 
 	public:
 		bfloat16_t() = default;
-		constexpr bfloat16_t(uint16_t r, bool) : raw_bits_(r) {}
+		constexpr bfloat16_t(const uint16_t r, bool) : raw_bits_(r) {}
 
-		bfloat16_t(float f) {
+		bfloat16_t(const float f) {
 			uint16_t iraw[2];
 			std::memcpy(iraw, &f, sizeof(float));
 
@@ -54,7 +54,7 @@ namespace biovault {
 				break;
 			case FP_NORMAL:
 				// round to nearest even and truncate
-				unsigned int rounding_bias = 0x00007FFF + (iraw[1] & 0x1);
+				const unsigned int rounding_bias = 0x00007FFF + (iraw[1] & 0x1);
 				uint32_t int_raw;
 				std::memcpy(&int_raw, &f, sizeof(float));
 				int_raw += rounding_bias;
@@ -66,7 +66,7 @@ namespace biovault {
 
 		operator float() const;
 
-		bfloat16_t &operator+=(bfloat16_t a) {
+		bfloat16_t &operator+=(const bfloat16_t a) {
 			(*this) = (float)(*this) + (float)a;
 			return *this;
 		}
