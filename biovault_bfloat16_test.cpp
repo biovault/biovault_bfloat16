@@ -320,32 +320,13 @@ GTEST_TEST(bfloat16, RawRoundTrip)
 			if (((i >= _32641) && (i <= _32703)) ||
 				((i >= _65409) && (i <= _65471)))
 			{
-				// i has the raw bits of a signaling NaN.
+				// i has the raw bits of a signaling NaN. In this case, the round trip
+				// may not be lossless, as a signaling NaN may change into a quiet NaN
+				// when returned by the float() conversion operator of bfloat_t
+				// (depending on compiler version and compilation flags).
 
 				ASSERT_TRUE(float_category == FP_NAN);
 				ASSERT_EQ(roundtripped_bfloat.raw_bits_, i + _64);
-
-				const auto IsVisualCpp32BitDebug = []
-				{
-#if defined(_MSC_VER) && defined(_DEBUG) && ! defined(_M_X64)
-					return true;
-#else
-					return false;
-#endif
-				};
-
-				if (IsVisualCpp32BitDebug())
-				{
-					// Visual C++ 32-bit Debug appears to behave differently when returning a
-					// signaling NaN by value, as bfloat16_t::operator float() does.
-					// It appears to convert signaling NaN to quiet NaN, just like 
-					// bfloat16_t::operator=(const float f)!
-					EXPECT_EQ(float_to_array_of_bytes(round_tripped_float), float_to_array_of_bytes(f));
-				}
-				else
-				{
-					EXPECT_EQ(float_to_array_of_bytes(round_tripped_float), float_to_array_of_bytes(f));
-				}
 			}
 			else
 			{
