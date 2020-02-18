@@ -261,6 +261,14 @@ GTEST_TEST(bfloat16, Epsilon)
 }
 
 
+GTEST_TEST(bfloat16, AllowsConstexprConstructionFromRawBits)
+{
+	BIOVAULT_BFLOAT16_CONSTEXPR biovault::bfloat16_t bfloat16_from_raw_bits(std::uint16_t{}, bool{});
+	const float f = bfloat16_from_raw_bits;
+	EXPECT_EQ(f, 0.0f);
+}
+
+
 GTEST_TEST(bfloat16, RawRoundTrip)
 {
 	constexpr std::uint16_t _15{ std::numeric_limits<std::uint16_t>::digits - 1 };
