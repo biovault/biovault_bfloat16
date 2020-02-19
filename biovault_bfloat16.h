@@ -44,6 +44,8 @@ namespace biovault {
 	public:
 		bfloat16_t() = default;
 
+		// Allows specifying a bfloat16 by its raw bits. Equivalent to C++20
+		// std::bit_cast<bfloat16_t>(r) (which is more generic, of course.)
 		BIOVAULT_BFLOAT16_CONSTEXPR bfloat16_t(const std::uint16_t r, bool) : raw_bits_(r) {}
 
 		// Supports narrowing (lossy) conversion from 32-bit float to bfloat16.
@@ -87,7 +89,16 @@ namespace biovault {
 			(*this) = bfloat16_t{ float{*this} + float{a} };
 			return *this;
 		}
+
+		friend BIOVAULT_BFLOAT16_CONSTEXPR std::uint16_t get_raw_bits(const bfloat16_t&);
 	};
+
+	// Allows retrieving the raw bits of a bfloat16. Equivalent to C++20
+	// std::bit_cast<uint16_t>(bf16) (which is more generic, of course.)
+	inline BIOVAULT_BFLOAT16_CONSTEXPR std::uint16_t get_raw_bits(const bfloat16_t& bf16)
+	{
+		return bf16.raw_bits_;
+	}
 
 	static_assert(sizeof(bfloat16_t) == 2, "bfloat16_t must be 2 bytes");
 
