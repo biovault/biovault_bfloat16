@@ -23,6 +23,16 @@
 #include <cfloat>
 #include <cstring>
 
+#ifdef _MSC_VER
+#	if _MSC_VER < 1900
+	// Before Visual Studio 2015, Visual C++ did not yet support constexpr
+#	define BIOVAULT_BFLOAT16_CONSTEXPR
+#	endif
+#endif
+
+#ifndef BIOVAULT_BFLOAT16_CONSTEXPR
+#define BIOVAULT_BFLOAT16_CONSTEXPR constexpr
+#endif
 
 namespace biovault {
 
@@ -34,7 +44,7 @@ namespace biovault {
 	public:
 		bfloat16_t() = default;
 
-		constexpr bfloat16_t(const std::uint16_t r, bool) : raw_bits_(r) {}
+		BIOVAULT_BFLOAT16_CONSTEXPR bfloat16_t(const std::uint16_t r, bool) : raw_bits_(r) {}
 
 		// Supports narrowing (lossy) conversion from 32-bit float to bfloat16.
 		explicit bfloat16_t(const float f) {
