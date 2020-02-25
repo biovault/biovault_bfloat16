@@ -69,14 +69,6 @@ namespace
 	}
 
 
-	std::uint16_t get_raw_bits_of_bfloat16(const biovault::bfloat16_t arg)
-	{
-		std::uint16_t raw_bits;
-		std::memcpy(&raw_bits, &arg, sizeof(std::uint16_t));
-		return raw_bits;
-	}
-
-
 	// Note: Conversion from 32-bit float to bfloat16 may not be lossless!
 	biovault::bfloat16_t float_to_bfloat16(const float arg)
 	{
@@ -93,7 +85,7 @@ namespace
 	// Note: Conversion from 32-bit float to uint16 may not be lossless!
 	std::uint16_t float_to_raw_bits_of_bfloat16(const float arg)
 	{
-		return get_raw_bits_of_bfloat16(float_to_bfloat16(arg));
+		return get_raw_bits(float_to_bfloat16(arg));
 	}
 
 
@@ -269,6 +261,23 @@ GTEST_TEST(bfloat16, AllowsConstexprConstructionFromRawBits)
 }
 
 
+GTEST_TEST(bfloat16, RawBitsRoundTripIsLossless)
+{
+	BIOVAULT_BFLOAT16_CONSTEXPR biovault::bfloat16_t bf16(std::uint16_t{}, bool{});
+	BIOVAULT_BFLOAT16_CONSTEXPR std::uint16_t ui16{ get_raw_bits(bf16) };
+
+	static_assert(ui16 == std::uint16_t{}, "Round tripped raw zero bits should yield zero");
+	ASSERT_EQ(ui16, std::uint16_t{});
+
+	const auto uint16_max = std::numeric_limits<std::uint16_t>::max();
+
+	for (std::uint16_t i = uint16_max; i > 0; --i)
+	{
+		ASSERT_EQ(get_raw_bits(biovault::bfloat16_t{ i, bool{} }), i);
+	}
+}
+
+
 GTEST_TEST(bfloat16, RawRoundTrip)
 {
 	constexpr std::uint16_t _15{ std::numeric_limits<std::uint16_t>::digits - 1 };
@@ -336,7 +345,7 @@ GTEST_TEST(bfloat16, RawRoundTrip)
 				// (depending on compiler version and compilation flags).
 
 				ASSERT_TRUE(float_category == FP_NAN);
-				ASSERT_EQ(get_raw_bits_of_bfloat16(roundtripped_bfloat), i + _64);
+				ASSERT_EQ(get_raw_bits(roundtripped_bfloat), i + _64);
 			}
 			else
 			{
