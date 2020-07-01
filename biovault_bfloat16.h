@@ -24,7 +24,7 @@
 #include <cmath>
 #include <cfloat>
 #include <cstring>
-#include <type_traits> // For is_pod.
+#include <type_traits> // For enable_if, is_integral, and is_pod.
 
 #ifdef _MSC_VER
 #	if _MSC_VER < 1900
@@ -110,6 +110,19 @@ namespace biovault {
 				break;
 			}
 		}
+
+
+		// Supports possibly narrowing (lossy) conversion from any integer type.
+		// Equivalent to bfloat16_t{static_cast<float>(i)}, but significantly faster.
+		template <typename T, typename = typename std::enable_if<std::is_integral<T>::value>::type>
+		explicit bfloat16_t(const T i) {
+			const auto bits_of_float = bit_cast<uint32_t>(static_cast<float>(i));
+			// round to nearest even and truncate
+			const uint32_t rounding_bias{ 0x7FFFU + (uint32_t{bits_of_float >> 16} & 1U) };
+			const uint32_t raw_32_bits{ bits_of_float + rounding_bias };
+			raw_bits_ = (raw_32_bits >> 16);
+		}
+
 
 		operator float() const {
 			// Implementation originally from:
