@@ -14,14 +14,17 @@
 * limitations under the License.
 *******************************************************************************/
 
-// Adapted from the original dnnl::impl::bfloat16_t implementation by Intel Corporation,
+// Adapted from the original dnnl::impl::bfloat16_t implementation of
+// oneAPI Deep Neural Network Library (oneDNN), by Intel Corporation,
 // which is licensed under the Apache License, Version 2.0:
-// https://github.com/intel/mkl-dnn/blob/v1.2/LICENSE
+// https://github.com/oneapi-src/oneDNN/blob/v1.5/LICENSE
 
+#include <array>
 #include <cstdint> // For uint16_t and uint32_t.
 #include <cmath>
 #include <cfloat>
 #include <cstring>
+#include <type_traits> // For is_pod.
 
 #ifdef _MSC_VER
 #	if _MSC_VER < 1900
@@ -46,18 +49,44 @@ namespace biovault {
 
 		uint16_t raw_bits_;
 
+		// bit_cast implementation originally from oneDNN:
+		// https://github.com/oneapi-src/oneDNN/blob/v1.5/src/common/bit_cast.hpp
+		//
+		// Returns a value of type T by reinterpretting the representation of the input
+		// value (part of C++20).
+		//
+		// Provides a safe implementation of type punning.
+		//
+		// Constraints:
+		// - U and T must have the same size
+		// - U and T must be trivially copyable
+		template <typename T, typename U>
+		static T bit_cast(const U& u) {
+			static_assert(sizeof(T) == sizeof(U), "Bit-casting must preserve size.");
+			// Use std::is_pod as older GNU versions do not support
+			// std::is_trivially_copyable.
+			static_assert(std::is_pod<T>::value, "T must be trivially copyable.");
+			static_assert(std::is_pod<U>::value, "U must be trivially copyable.");
+
+			T t;
+			std::memcpy(&t, &u, sizeof(U));
+			return t;
+		}
+
 	public:
 		bfloat16_t() = default;
 
 		// Allows specifying a bfloat16 by its raw bits. Equivalent to C++20
 		// std::bit_cast<bfloat16_t>(r) (which is more generic, of course.)
+		// Originally from oneDNN:
+		// https://github.com/oneapi-src/oneDNN/blob/v1.5/src/common/bfloat16.hpp#L34
 		BIOVAULT_BFLOAT16_CONSTEXPR bfloat16_t(const uint16_t r, bool) : raw_bits_(r) {}
 
 		// Supports narrowing (lossy) conversion from 32-bit float to bfloat16.
 		explicit bfloat16_t(const float f) {
-			uint16_t iraw[2];
-			std::memcpy(iraw, &f, sizeof(float));
-
+			// Implementation originally from oneDNN:
+			// https://github.com/oneapi-src/oneDNN/blob/v1.5/src/cpu/bfloat16.cpp#L47-L69
+			auto iraw = bit_cast<std::array<uint16_t, 2>>(f);
 			switch (std::fpclassify(f)) {
 			case FP_SUBNORMAL:
 			case FP_ZERO:
@@ -74,20 +103,19 @@ namespace biovault {
 			case FP_NORMAL:
 				// round to nearest even and truncate
 				const uint32_t rounding_bias = 0x00007FFF + (iraw[1] & 0x1);
-				uint32_t int_raw;
-				std::memcpy(&int_raw, &f, sizeof(float));
-				int_raw += rounding_bias;
-				std::memcpy(iraw, &int_raw, sizeof(float));
+				const uint32_t int_raw
+					= bit_cast<uint32_t>(f) + rounding_bias;
+				iraw = bit_cast<std::array<uint16_t, 2>>(int_raw);
 				raw_bits_ = iraw[1];
 				break;
 			}
 		}
 
 		operator float() const {
-			const uint16_t iraw[2] = { 0, raw_bits_ };
-			float f;
-			std::memcpy(&f, iraw, sizeof(float));
-			return f;
+			// Implementation originally from:
+			// https://github.com/oneapi-src/oneDNN/blob/v1.5/src/cpu/bfloat16.cpp#L75-L76
+			std::array<uint16_t, 2> iraw = {{0, raw_bits_}};
+			return bit_cast<float>(iraw);
 		}
 
 		bfloat16_t &operator+=(const bfloat16_t a) {

@@ -2,9 +2,10 @@
 
 A `bfloat16` implementation for projects of [BioVault](https://github.com/biovault) (Biomedical Visual Analytics Unit LUMC - TU Delft)
 
-Originally based upon `dnnl::impl::bfloat16_t` from the [Deep Neural Network Library (DNNL)](https://github.com/intel/mkl-dnn) of Intel Corporation:
-* https://github.com/intel/mkl-dnn/blob/v1.2/src/cpu/bfloat16.cpp
-* https://github.com/intel/mkl-dnn/blob/v1.2/src/common/bfloat16.hpp
+Originally based upon `dnnl::impl::bfloat16_t` from the [Deep Neural Network Library (DNNL)](https://github.com/intel/mkl-dnn) of Intel Corporation.
+Updated to version 1.5 of their library, which has been renamed to [oneAPI Deep Neural Network Library (oneDNN)](https://github.com/oneapi-src/oneDNN).
+* https://github.com/oneapi-src/oneDNN/blob/v1.5/src/cpu/bfloat16.cpp
+* https://github.com/oneapi-src/oneDNN/blob/v1.5/src/common/bfloat16.hpp
 
 ## References:
 
@@ -22,9 +23,9 @@ Originally based upon `dnnl::impl::bfloat16_t` from the [Deep Neural Network Lib
 
 ## Related issues:
 
-* DNNL: [Prevent constructing signaling NaNs and denormals (subnormal floats) by bfloat16_t](https://github.com/intel/mkl-dnn/pull/649)
+* oneDNN: [Prevent constructing signaling NaNs and denormals (subnormal floats) by bfloat16_t](https://github.com/oneapi-src/oneDNN/pull/649) (ClosedClosed with unmerged commit)
 
-* DNNL: [Avoid undefined behavior (UB) bfloat16_t by removing type-pun via union](https://github.com/intel/mkl-dnn/pull/646) (Closed)
+* oneDNN: [Avoid undefined behavior (UB) bfloat16_t by removing type-pun via union](https://github.com/oneapi-src/oneDNN/pull/646) (Closed)
 
 * TensorFlow: [bfloat16 does not flush denormals (subnormal floats) to zero](https://github.com/tensorflow/tensorflow/issues/36514)
  
