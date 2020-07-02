@@ -18,7 +18,7 @@
 // which is licensed under the Apache License, Version 2.0:
 // https://github.com/intel/mkl-dnn/blob/v1.2/LICENSE
 
-#include <cstdint> // For std::uint16_t
+#include <cstdint> // For uint16_t and uint32_t.
 #include <cmath>
 #include <cfloat>
 #include <cstring>
@@ -39,18 +39,23 @@ namespace biovault {
 	class bfloat16_t {
 
 	private:
-		std::uint16_t raw_bits_;
+		// Ensure that the following integer types can be used without "std::" prefix,
+		// just like in the original implementation (dnnl::impl::bfloat16_t).
+		using uint16_t = std::uint16_t;
+		using uint32_t = std::uint32_t;
+
+		uint16_t raw_bits_;
 
 	public:
 		bfloat16_t() = default;
 
 		// Allows specifying a bfloat16 by its raw bits. Equivalent to C++20
 		// std::bit_cast<bfloat16_t>(r) (which is more generic, of course.)
-		BIOVAULT_BFLOAT16_CONSTEXPR bfloat16_t(const std::uint16_t r, bool) : raw_bits_(r) {}
+		BIOVAULT_BFLOAT16_CONSTEXPR bfloat16_t(const uint16_t r, bool) : raw_bits_(r) {}
 
 		// Supports narrowing (lossy) conversion from 32-bit float to bfloat16.
 		explicit bfloat16_t(const float f) {
-			std::uint16_t iraw[2];
+			uint16_t iraw[2];
 			std::memcpy(iraw, &f, sizeof(float));
 
 			switch (std::fpclassify(f)) {
@@ -68,8 +73,8 @@ namespace biovault {
 				break;
 			case FP_NORMAL:
 				// round to nearest even and truncate
-				const std::uint32_t rounding_bias = 0x00007FFF + (iraw[1] & 0x1);
-				std::uint32_t int_raw;
+				const uint32_t rounding_bias = 0x00007FFF + (iraw[1] & 0x1);
+				uint32_t int_raw;
 				std::memcpy(&int_raw, &f, sizeof(float));
 				int_raw += rounding_bias;
 				std::memcpy(iraw, &int_raw, sizeof(float));
@@ -79,7 +84,7 @@ namespace biovault {
 		}
 
 		operator float() const {
-			const std::uint16_t iraw[2] = { 0, raw_bits_ };
+			const uint16_t iraw[2] = { 0, raw_bits_ };
 			float f;
 			std::memcpy(&f, iraw, sizeof(float));
 			return f;
@@ -90,7 +95,7 @@ namespace biovault {
 			return *this;
 		}
 
-		friend BIOVAULT_BFLOAT16_CONSTEXPR std::uint16_t get_raw_bits(const bfloat16_t&);
+		friend BIOVAULT_BFLOAT16_CONSTEXPR uint16_t get_raw_bits(const bfloat16_t&);
 	};
 
 	// Allows retrieving the raw bits of a bfloat16. Equivalent to C++20
