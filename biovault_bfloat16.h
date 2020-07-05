@@ -131,6 +131,11 @@ namespace biovault {
 			return bit_cast<float>(iraw);
 		}
 
+		template <typename T, typename = typename std::enable_if<std::is_integral<T>::value>::type>
+		bfloat16_t& operator=(const T i) {
+			return (*this) = bfloat16_t{ i };
+		}
+
 		bfloat16_t &operator+=(const bfloat16_t a) {
 			(*this) = bfloat16_t{ float{*this} + float{a} };
 			return *this;
