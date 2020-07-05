@@ -487,3 +487,26 @@ GTEST_TEST(bfloat16, AssignmentFromIntegerYieldsSameRawBitsAsConstructionFromInt
 	}
 
 }
+
+GTEST_TEST(bfloat16, AssignmentFromFloatYieldsSameRawBitsAsConstructionFromFloat)
+{
+	for (float f{}; f <= 2.0f; f += 0.5)
+	{
+		assert_assignment_yields_same_raw_bits_as_construction_from_value(f);
+		assert_assignment_yields_same_raw_bits_as_construction_from_value(-f);
+	}
+
+	for (float f :
+	{
+		limits::min(),
+		limits::max(),
+		limits::epsilon(),
+		limits::quiet_NaN(),
+		limits::denorm_min(),
+		limits::infinity()
+	})
+	{
+		assert_assignment_yields_same_raw_bits_as_construction_from_value(f);
+		assert_assignment_yields_same_raw_bits_as_construction_from_value(-f);
+	}
+}
