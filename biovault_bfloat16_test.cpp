@@ -142,6 +142,37 @@ namespace
 		assert_conversion_from_specified_value_equals_conversion_from_float(std::numeric_limits<T>::max());
 	}
 
+
+	template <typename T>
+	void assert_assignment_yields_same_raw_bits_as_construction_from_value(const T value)
+	{
+		biovault::bfloat16_t bf16;
+		// Assignment to be tested:
+		bf16 = value;
+		ASSERT_EQ(get_raw_bits(bf16), get_raw_bits(biovault::bfloat16_t{ value }));
+	}
+
+
+	template <typename T>
+	void assert_assignment_from_integer_type_yields_same_raw_bits_as_construction_from_value()
+	{
+		// Tests all values of the integer type, from its min to its max.
+		constexpr auto max_value = std::numeric_limits<T>::max();
+
+		for (auto i = std::numeric_limits<T>::min(); i < max_value; ++i)
+		{
+			assert_assignment_yields_same_raw_bits_as_construction_from_value(i);
+		}
+		assert_assignment_yields_same_raw_bits_as_construction_from_value(max_value);
+	}
+
+	template <typename T>
+	void assert_assignment_from_min_and_max_yield_same_raw_bits_as_construction_from_value()
+	{
+		assert_assignment_yields_same_raw_bits_as_construction_from_value(std::numeric_limits<T>::min());
+		assert_assignment_yields_same_raw_bits_as_construction_from_value(std::numeric_limits<T>::max());
+	}
+
 }
 
 
@@ -418,6 +449,41 @@ GTEST_TEST(bfloat16, RawRoundTrip)
 				EXPECT_EQ(float_to_raw_bits_of_bfloat16(f), i);
 			}
 		}
+	}
+
+}
+
+
+GTEST_TEST(bfloat16, AssignmentFromIntegerYieldsSameRawBitsAsConstructionFromInteger)
+{
+	assert_assignment_yields_same_raw_bits_as_construction_from_value(0);
+
+	// Exhaustive testing for integer types <= 16 bits:
+	assert_assignment_from_integer_type_yields_same_raw_bits_as_construction_from_value<std::int8_t>();
+	assert_assignment_from_integer_type_yields_same_raw_bits_as_construction_from_value<std::uint8_t>();
+	assert_assignment_from_integer_type_yields_same_raw_bits_as_construction_from_value<std::int16_t>();
+	assert_assignment_from_integer_type_yields_same_raw_bits_as_construction_from_value<std::uint16_t>();
+
+	// Limited (incomplete) testing for integer types >= 32 bits, to avoid excessive test duration:
+	assert_assignment_from_min_and_max_yield_same_raw_bits_as_construction_from_value<std::int32_t>();
+	assert_assignment_from_min_and_max_yield_same_raw_bits_as_construction_from_value<std::uint32_t>();
+	assert_assignment_from_min_and_max_yield_same_raw_bits_as_construction_from_value<std::int64_t>();
+	assert_assignment_from_min_and_max_yield_same_raw_bits_as_construction_from_value<std::uint64_t>();
+
+	// Test zero for signed types >= 32 bits (already tested for unsigned types by
+	// assert_assignment_from_min_and_max_yield_same_raw_bits_as_construction_from_value<T>().
+	assert_assignment_yields_same_raw_bits_as_construction_from_value(std::int32_t{ 0 });
+	assert_assignment_yields_same_raw_bits_as_construction_from_value(std::int64_t{ 0 });
+
+	// And then just test integer types >= 32 bits for values from 65535 down to one:
+	for (auto i = std::numeric_limits<std::uint16_t>::max(); i > 0; --i)
+	{
+		assert_assignment_yields_same_raw_bits_as_construction_from_value(std::int32_t{ i });
+		assert_assignment_yields_same_raw_bits_as_construction_from_value(std::int64_t{ i });
+		assert_assignment_yields_same_raw_bits_as_construction_from_value(-std::int32_t{ i });
+		assert_assignment_yields_same_raw_bits_as_construction_from_value(-std::int64_t{ i });
+		assert_assignment_yields_same_raw_bits_as_construction_from_value(std::uint32_t{ i });
+		assert_assignment_yields_same_raw_bits_as_construction_from_value(std::uint64_t{ i });
 	}
 
 }
