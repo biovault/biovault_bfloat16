@@ -136,6 +136,10 @@ namespace biovault {
 			return (*this) = bfloat16_t{ i };
 		}
 
+		bfloat16_t& operator=(const float f) {
+			return (*this) = bfloat16_t{ f };
+		}
+
 		bfloat16_t &operator+=(const bfloat16_t a) {
 			(*this) = bfloat16_t{ float{*this} + float{a} };
 			return *this;
