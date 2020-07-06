@@ -57,7 +57,7 @@ namespace
 #endif
 	constexpr bool exhaustive{ HDPS_BFLOAT16_EXHAUSTIVE_TEST };
 
-	using limits = std::numeric_limits<float>;
+	using float_limits = std::numeric_limits<float>;
 	using array_of_bytes = std::array<std::uint8_t, sizeof(float)>;
 
 	// Return the four bytes that the specified float consists of.
@@ -235,7 +235,7 @@ GTEST_TEST(bfloat16, PowerOfTwoRoundTripIsLossless)
 
 	constexpr auto abs_exponent_of_minimum_positive = (std::uint8_t{ 1u } << std::uint8_t{ 7u }) - std::uint8_t{ 2 };
 
-	ASSERT_EQ(std::pow(2.0f, -int{ abs_exponent_of_minimum_positive }), limits::min());
+	ASSERT_EQ(std::pow(2.0f, -int{ abs_exponent_of_minimum_positive }), float_limits::min());
 
 	// For exponent = -126 up to minus one.
 	for (std::uint8_t abs_exponent{ abs_exponent_of_minimum_positive }; abs_exponent > 0; --abs_exponent)
@@ -251,8 +251,8 @@ GTEST_TEST(bfloat16, MaxBFloat16IsLossless)
 	const auto max_bfloat16 = 3.38953139e38f;
 	const auto max_float32 = 3.402823466e38f;
 
-	ASSERT_EQ(max_float32, limits::max());
-	ASSERT_LT(max_bfloat16, limits::max());
+	ASSERT_EQ(max_float32, float_limits::max());
+	ASSERT_LT(max_bfloat16, float_limits::max());
 
 	// "The maximum positive finite value of a normal bfloat16 number is 3.38953139 x 10^38,
 	// slightly below (2^24 − 1) x 2^−23 x 2^127 = 3.402823466  x 10^38, the max finite
@@ -265,21 +265,21 @@ GTEST_TEST(bfloat16, MaxBFloat16IsLossless)
 
 GTEST_TEST(bfloat16, NanInfinityMinAndEpsilonRoundTripsAreLossless)
 {
-	assert_lossless_roundtrip(limits::quiet_NaN());
-	assert_lossless_roundtrip(limits::infinity());
-	assert_lossless_roundtrip(-limits::infinity());
-	assert_lossless_roundtrip(limits::min());
-	assert_lossless_roundtrip(-limits::min());
-	assert_lossless_roundtrip(limits::epsilon());
-	assert_lossless_roundtrip(-limits::epsilon());
+	assert_lossless_roundtrip(float_limits::quiet_NaN());
+	assert_lossless_roundtrip(float_limits::infinity());
+	assert_lossless_roundtrip(-float_limits::infinity());
+	assert_lossless_roundtrip(float_limits::min());
+	assert_lossless_roundtrip(-float_limits::min());
+	assert_lossless_roundtrip(float_limits::epsilon());
+	assert_lossless_roundtrip(-float_limits::epsilon());
 }
 
 
 GTEST_TEST(bfloat16, MaxAndLowestFloatsConvertToInfinity)
 {
-	ASSERT_EQ(roundtrip_float(limits::max()), limits::infinity());
-	ASSERT_EQ(roundtrip_float(-limits::max()), -limits::infinity());
-	ASSERT_EQ(roundtrip_float(limits::lowest()), -limits::infinity());
+	ASSERT_EQ(roundtrip_float(float_limits::max()), float_limits::infinity());
+	ASSERT_EQ(roundtrip_float(-float_limits::max()), -float_limits::infinity());
+	ASSERT_EQ(roundtrip_float(float_limits::lowest()), -float_limits::infinity());
 }
 
 
@@ -293,14 +293,14 @@ GTEST_TEST(bfloat16, DenormalFloatsConvertToZero)
 	constexpr auto zeroArray = array_of_bytes{};
 	const auto minusZeroArray = float_to_array_of_bytes(-0.0f);
 
-	EXPECT_EQ(roundtrip_float(limits::min() / 2.0f), 0.0f);
-	EXPECT_EQ(roundtrip_float(-limits::min() / 2.0f), 0.0f);
+	EXPECT_EQ(roundtrip_float(float_limits::min() / 2.0f), 0.0f);
+	EXPECT_EQ(roundtrip_float(-float_limits::min() / 2.0f), 0.0f);
 
-	EXPECT_EQ(roundtrip_float(limits::denorm_min()), 0.0f);
-	EXPECT_EQ(roundtrip_float(-limits::denorm_min()), 0.0f);
+	EXPECT_EQ(roundtrip_float(float_limits::denorm_min()), 0.0f);
+	EXPECT_EQ(roundtrip_float(-float_limits::denorm_min()), 0.0f);
 
-	const auto denom_max = nextafterf(limits::min(), 0.0f);
-	ASSERT_LT(denom_max, limits::min());
+	const auto denom_max = nextafterf(float_limits::min(), 0.0f);
+	ASSERT_LT(denom_max, float_limits::min());
 	ASSERT_GT(denom_max, 0.0f);
 
 	EXPECT_EQ(roundtrip_float(denom_max), 0.0f);
@@ -338,7 +338,7 @@ GTEST_TEST(bfloat16, Epsilon)
 
 	if (exhaustive)
 	{
-		for (auto f = std::numeric_limits<float>::epsilon(); f < bfloat16_epsilon; f = std::nextafterf(f, 1.0f))
+		for (auto f = float_limits::epsilon(); f < bfloat16_epsilon; f = std::nextafterf(f, 1.0f))
 		{
 			EXPECT_EQ(roundtrip_float(1.0f + f), 1.0f);
 		}
@@ -498,12 +498,12 @@ GTEST_TEST(bfloat16, AssignmentFromFloatYieldsSameRawBitsAsConstructionFromFloat
 
 	for (float f :
 	{
-		limits::min(),
-		limits::max(),
-		limits::epsilon(),
-		limits::quiet_NaN(),
-		limits::denorm_min(),
-		limits::infinity()
+		float_limits::min(),
+		float_limits::max(),
+		float_limits::epsilon(),
+		float_limits::quiet_NaN(),
+		float_limits::denorm_min(),
+		float_limits::infinity()
 	})
 	{
 		assert_assignment_yields_same_raw_bits_as_construction_from_value(f);
