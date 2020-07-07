@@ -17,16 +17,18 @@ Updated to version 1.5 of their library, which has been renamed to [oneAPI Deep 
 
 * John D. Cook, 15 November 2018, [Comparing bfloat16 range and precision to other 16-bit numbers](https://www.johndcook.com/blog/2018/11/15/bfloat16)
 
-* [`tensorflow::bfloat16` from TensorFlow](https://github.com/tensorflow/tensorflow/tree/v2.1.0/tensorflow/core/lib/bfloat16)
+* [`tensorflow::bfloat16` from TensorFlow](https://github.com/tensorflow/tensorflow/tree/v2.2.0/tensorflow/core/lib/bfloat16)
 
 * Shibo Wang, Pankaj Kanwar, August 23, 2019 [BFloat16: The secret to high performance on Cloud TPUs](https://cloud.google.com/blog/products/ai-machine-learning/bfloat16-the-secret-to-high-performance-on-cloud-tpus)
 
 ## Related issues:
 
-* oneDNN: [Prevent constructing signaling NaNs and denormals (subnormal floats) by bfloat16_t](https://github.com/oneapi-src/oneDNN/pull/649) (ClosedClosed with unmerged commit)
+* oneDNN: [Prevent constructing signaling NaNs and denormals (subnormal floats) by bfloat16_t](https://github.com/oneapi-src/oneDNN/pull/649) (Closed with unmerged commit)
 
 * oneDNN: [Avoid undefined behavior (UB) bfloat16_t by removing type-pun via union](https://github.com/oneapi-src/oneDNN/pull/646) (Closed)
 
-* TensorFlow: [bfloat16 does not flush denormals (subnormal floats) to zero](https://github.com/tensorflow/tensorflow/issues/36514)
+* TensorFlow: [bfloat16 does not flush denormals (subnormal floats) to zero](https://github.com/tensorflow/tensorflow/issues/36514) (Closed) 
+
+* TensorFlow: [Avoid undefined behavior by union type punning in round_to_bfloat16](https://github.com/tensorflow/tensorflow/pull/41070)
  
 * Visual C++: [Signaling NaN (float, double) becomes quiet NaN when returned from function (both x86 and x64)](https://developercommunity.visualstudio.com/content/problem/903305/signaling-nan-float-double-becomes-quiet-nan-when.html)
