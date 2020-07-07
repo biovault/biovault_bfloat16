@@ -176,7 +176,7 @@ namespace
 }
 
 
-GTEST_TEST(bfloat16, WholeNumbersOfAtMostEightBitsPreserveValueAfterRoundTripIsLossless)
+GTEST_TEST(bfloat16, EightBitWholeNumberRoundTripIsLossless)
 {
 	// bfloat16_t has only 7 bits for its mantissa, but it implicitly has a 1 as the most significant bit.
 
@@ -246,7 +246,7 @@ GTEST_TEST(bfloat16, PowerOfTwoRoundTripIsLossless)
 }
 
 
-GTEST_TEST(bfloat16, MaxBFloat16IsLossless)
+GTEST_TEST(bfloat16, MaxBFloat16RoundTripIsLossless)
 {
 	const auto max_bfloat16 = 3.38953139e38f;
 	const auto max_float32 = 3.402823466e38f;
