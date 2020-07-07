@@ -189,38 +189,6 @@ GTEST_TEST(bfloat16, EightBitWholeNumberRoundTripIsLossless)
 }
 
 
-GTEST_TEST(bfloat16, ConversionFromIntegerTypesEqualsConversionFromFloat)
-{
-	// Exhaustive testing for integer types <= 16 bits:
-	assert_conversion_from_integer_type_equals_conversion_from_float<std::int8_t>();
-	assert_conversion_from_integer_type_equals_conversion_from_float<std::uint8_t>();
-	assert_conversion_from_integer_type_equals_conversion_from_float<std::int16_t>();
-	assert_conversion_from_integer_type_equals_conversion_from_float<std::uint16_t>();
-
-	// Limited (incomplete) testing for integer types >= 32 bits, to avoid excessive test duration:
-	assert_conversion_from_min_and_max_equals_conversion_from_float<std::int32_t>();
-	assert_conversion_from_min_and_max_equals_conversion_from_float<std::uint32_t>();
-	assert_conversion_from_min_and_max_equals_conversion_from_float<std::int64_t>();
-	assert_conversion_from_min_and_max_equals_conversion_from_float<std::uint64_t>();
-
-	// Test zero for signed types >= 32 bits (already tested for unsigned types by
-	// assert_conversion_from_min_and_max_equals_conversion_from_float<T>().
-	assert_conversion_from_specified_value_equals_conversion_from_float(std::int32_t{0});
-	assert_conversion_from_specified_value_equals_conversion_from_float(std::int64_t{0});
-
-	// And then just test integer types >= 32 bits for values from 65535 down to one:
-	for (auto i = std::numeric_limits<std::uint16_t>::max(); i > 0; --i)
-	{
-		assert_conversion_from_specified_value_equals_conversion_from_float(std::int32_t{ i });
-		assert_conversion_from_specified_value_equals_conversion_from_float(std::int64_t{ i });
-		assert_conversion_from_specified_value_equals_conversion_from_float(-std::int32_t{ i });
-		assert_conversion_from_specified_value_equals_conversion_from_float(-std::int64_t{ i });
-		assert_conversion_from_specified_value_equals_conversion_from_float(std::uint32_t{ i });
-		assert_conversion_from_specified_value_equals_conversion_from_float(std::uint64_t{ i });
-	}
-}
-
-
 GTEST_TEST(bfloat16, PowerOfTwoRoundTripIsLossless)
 {
 	// For exponent = 128 down to one.
@@ -451,6 +419,38 @@ GTEST_TEST(bfloat16, RawRoundTrip)
 		}
 	}
 
+}
+
+
+GTEST_TEST(bfloat16, ConversionFromIntegerTypesEqualsConversionFromFloat)
+{
+	// Exhaustive testing for integer types <= 16 bits:
+	assert_conversion_from_integer_type_equals_conversion_from_float<std::int8_t>();
+	assert_conversion_from_integer_type_equals_conversion_from_float<std::uint8_t>();
+	assert_conversion_from_integer_type_equals_conversion_from_float<std::int16_t>();
+	assert_conversion_from_integer_type_equals_conversion_from_float<std::uint16_t>();
+
+	// Limited (incomplete) testing for integer types >= 32 bits, to avoid excessive test duration:
+	assert_conversion_from_min_and_max_equals_conversion_from_float<std::int32_t>();
+	assert_conversion_from_min_and_max_equals_conversion_from_float<std::uint32_t>();
+	assert_conversion_from_min_and_max_equals_conversion_from_float<std::int64_t>();
+	assert_conversion_from_min_and_max_equals_conversion_from_float<std::uint64_t>();
+
+	// Test zero for signed types >= 32 bits (already tested for unsigned types by
+	// assert_conversion_from_min_and_max_equals_conversion_from_float<T>().
+	assert_conversion_from_specified_value_equals_conversion_from_float(std::int32_t{ 0 });
+	assert_conversion_from_specified_value_equals_conversion_from_float(std::int64_t{ 0 });
+
+	// And then just test integer types >= 32 bits for values from 65535 down to one:
+	for (auto i = std::numeric_limits<std::uint16_t>::max(); i > 0; --i)
+	{
+		assert_conversion_from_specified_value_equals_conversion_from_float(std::int32_t{ i });
+		assert_conversion_from_specified_value_equals_conversion_from_float(std::int64_t{ i });
+		assert_conversion_from_specified_value_equals_conversion_from_float(-std::int32_t{ i });
+		assert_conversion_from_specified_value_equals_conversion_from_float(-std::int64_t{ i });
+		assert_conversion_from_specified_value_equals_conversion_from_float(std::uint32_t{ i });
+		assert_conversion_from_specified_value_equals_conversion_from_float(std::uint64_t{ i });
+	}
 }
 
 
