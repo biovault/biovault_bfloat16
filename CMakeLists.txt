@@ -2,7 +2,9 @@
 
 project(biovault_bfloat16)
 
-cmake_minimum_required( VERSION 3.11.4 )
+# At the moment of writing (July 2020), the Microsoft-hosted VM ubuntu-18.04
+# still runs CMake 3.17.0 on Azure Pipelines.
+cmake_minimum_required( VERSION 3.17.0 )
 
 message(STATUS "[${PROJECT_NAME}] CMAKE_VERSION = ${CMAKE_VERSION}")
 message(STATUS "[${PROJECT_NAME}] CMAKE_GENERATOR = ${CMAKE_GENERATOR}")
