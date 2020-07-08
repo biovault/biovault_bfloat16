@@ -1,5 +1,5 @@
 jobs:
-- job: VS2019
+- job: Windows_VS2019
   pool:
     vmImage: 'windows-2019'
   steps:
@@ -10,10 +10,10 @@ jobs:
       cmake .. -G "Visual Studio 16 2019" -A x64
       MSBuild.exe ..\build\biovault_bfloat16.sln /property:Configuration=Release
       cd ..
-    displayName: VS2019 Build!
+    displayName: $(Agent.JobName) Visual C++ build
   - script: |
       .\build\Release\biovault_bfloat16_test.exe
-    displayName: Run it!
+    displayName: $(Agent.JobName) run
 
 - job: Ubuntu1804_GCC_7_4_0
   pool:
@@ -25,12 +25,12 @@ jobs:
       cmake ..
       make
       cd ..
-    displayName: GCC build
+    displayName: $(Agent.JobName) GCC build
   - script: |
       ./build/biovault_bfloat16_test
-    displayName: GCC run
+    displayName: $(Agent.JobName) run
    
-- job: macOS1014_AppleClang_11_0_0_11000033
+- job: macOS1014_AppleClang
   pool:
     vmImage: 'macOS-10.14'
   steps:
@@ -40,8 +40,8 @@ jobs:
       cmake ..
       make
       cd ..
-    displayName: Clang build macOS-10.14
+    displayName: $(Agent.JobName) Clang build
   - script: |
       ./build/biovault_bfloat16_test
-    displayName: Run!
+    displayName: $(Agent.JobName) run
 
