@@ -23,11 +23,10 @@
 
 // Standard library header files:
 #include <array>
-#include <cmath>    // For isnan.
+#include <cmath>    // For fpclassify.
 #include <cstring>
 #include <string>
 #include <limits>
-#include <vector>
 
 // References:
 //
