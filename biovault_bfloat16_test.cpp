@@ -287,29 +287,42 @@ GTEST_TEST(bfloat16, DenormalFloatsConvertToZero)
 
 GTEST_TEST(bfloat16, Epsilon)
 {
-	// According to John D. Cook, 15 November 2018,
+	// According to John D. Cook,
 	// Comparing bfloat16 range and precision to other 16-bit numbers:
 	//
 	// |--------+------------|
 	// | Format |    Epsilon |
 	// |--------+------------|
 	// | FP32   | 0.00000012 |
-	// | FP16   | 0.00390625 |
-	// | BF16   | 0.03125000 |
+	// | FP16   | 0.00097656 |
+	// | BF16   | 0.00781250 |
 	// |--------+------------|
 	// https://www.johndcook.com/blog/2018/11/15/bfloat16/
-
-	const auto bfloat16_epsilon = 0.00390631007f;
-
-	EXPECT_GT(roundtrip_float(1.0f + bfloat16_epsilon), 1.0f);
-	EXPECT_EQ(roundtrip_float(std::nextafterf(1.0f + bfloat16_epsilon, 0.0f)), 1.0f);
+	// (Web page checked on July 8, 2020.) 
 
 	if (exhaustive)
 	{
-		for (auto f = float_limits::epsilon(); f < bfloat16_epsilon; f = std::nextafterf(f, 1.0f))
+		const auto next_bfloat16 = []
 		{
-			EXPECT_EQ(roundtrip_float(1.0f + f), 1.0f);
-		}
+			const biovault::bfloat16_t bfloat16_one{ 1 };
+
+			auto f = 0.0f;
+
+			do
+			{
+				f = std::nextafterf(f, 1.0f);
+			} while (biovault::bfloat16_t{ 1.0f + f } <= bfloat16_one);
+
+			return biovault::bfloat16_t{ 1.0f + f };
+		}();
+
+		EXPECT_GT(float{ next_bfloat16 }, 1.0f);
+
+		const biovault::bfloat16_t bfloat16_epsilon{ next_bfloat16 - 1.0f };
+
+		EXPECT_GT(float{ bfloat16_epsilon }, float_limits::epsilon());
+		EXPECT_LT(float{ bfloat16_epsilon }, 1.0f);
+		EXPECT_EQ(float{ bfloat16_epsilon }, 0.00781250f);
 	}
 }
 
