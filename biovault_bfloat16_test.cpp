@@ -215,8 +215,8 @@ GTEST_TEST(bfloat16, PowerOfTwoRoundTripIsLossless)
 
 GTEST_TEST(bfloat16, MaxBFloat16RoundTripIsLossless)
 {
-	const auto max_bfloat16 = 3.38953139e38f;
-	const auto max_float32 = 3.402823466e38f;
+	constexpr auto max_bfloat16 = 3.38953139e38f;
+	constexpr auto max_float32 = 3.402823466e38f;
 
 	ASSERT_EQ(max_float32, float_limits::max());
 	ASSERT_LT(max_bfloat16, float_limits::max());
@@ -328,7 +328,7 @@ GTEST_TEST(bfloat16, Epsilon)
 
 GTEST_TEST(bfloat16, AllowsConstexprConstructionFromRawBits)
 {
-	BIOVAULT_BFLOAT16_CONSTEXPR biovault::bfloat16_t bfloat16_from_raw_bits(std::uint16_t{}, bool{});
+	constexpr biovault::bfloat16_t bfloat16_from_raw_bits(std::uint16_t{}, bool{});
 	const float f = bfloat16_from_raw_bits;
 	EXPECT_EQ(f, 0.0f);
 }
@@ -336,13 +336,13 @@ GTEST_TEST(bfloat16, AllowsConstexprConstructionFromRawBits)
 
 GTEST_TEST(bfloat16, RawBitsRoundTripIsLossless)
 {
-	BIOVAULT_BFLOAT16_CONSTEXPR biovault::bfloat16_t bf16(std::uint16_t{}, bool{});
-	BIOVAULT_BFLOAT16_CONSTEXPR std::uint16_t ui16{ get_raw_bits(bf16) };
+	constexpr biovault::bfloat16_t bf16(std::uint16_t{}, bool{});
+	constexpr std::uint16_t ui16{ get_raw_bits(bf16) };
 
 	static_assert(ui16 == std::uint16_t{}, "Round tripped raw zero bits should yield zero");
 	ASSERT_EQ(ui16, std::uint16_t{});
 
-	const auto uint16_max = std::numeric_limits<std::uint16_t>::max();
+	constexpr auto uint16_max = std::numeric_limits<std::uint16_t>::max();
 
 	for (std::uint16_t i = uint16_max; i > 0; --i)
 	{
