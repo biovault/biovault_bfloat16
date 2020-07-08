@@ -30,9 +30,9 @@ jobs:
       ./build/biovault_bfloat16_test
     displayName: $(Agent.JobName) run
    
-- job: macOS1014_AppleClang
+- job: macOS1015_AppleClang
   pool:
-    vmImage: 'macOS-10.14'
+    vmImage: 'macOS-10.15'
   steps:
   - script: |
       mkdir build
