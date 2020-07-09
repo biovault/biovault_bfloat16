@@ -83,7 +83,14 @@ namespace biovault {
 		BIOVAULT_BFLOAT16_CONSTEXPR bfloat16_t(const uint16_t r, bool) : raw_bits_(r) {}
 
 		// Supports narrowing (lossy) conversion from 32-bit float to bfloat16.
-		explicit bfloat16_t(const float f) {
+		// Note: This constructor is "explicit" by default, but can be adjusted
+		// to allow implicit conversion to bfloat16_t by defining the macro
+		// BIOVAULT_BFLOAT16_CONVERTING_CONSTRUCTORS. (The oneDNN library does allow
+		// implicit conversion from float to bfloat_t.)
+#ifndef BIOVAULT_BFLOAT16_CONVERTING_CONSTRUCTORS
+		explicit
+#endif
+			bfloat16_t(const float f) {
 			// Implementation originally from oneDNN:
 			// https://github.com/oneapi-src/oneDNN/blob/v1.5/src/cpu/bfloat16.cpp#L47-L69
 			auto iraw = bit_cast<std::array<uint16_t, 2>>(f);
@@ -114,8 +121,14 @@ namespace biovault {
 
 		// Supports possibly narrowing (lossy) conversion from any integer type.
 		// Equivalent to bfloat16_t{static_cast<float>(i)}, but significantly faster.
+		// Note: This constructor is "explicit" by default, but can be adjusted
+		// to allow implicit conversion to bfloat16_t by defining the macro
+		// BIOVAULT_BFLOAT16_CONVERTING_CONSTRUCTORS.
 		template <typename T, typename = typename std::enable_if<std::is_integral<T>::value>::type>
-		explicit bfloat16_t(const T i) {
+#ifndef BIOVAULT_BFLOAT16_CONVERTING_CONSTRUCTORS
+		explicit
+#endif
+			bfloat16_t(const T i) {
 			const auto bits_of_float = bit_cast<uint32_t>(static_cast<float>(i));
 			// round to nearest even and truncate
 			const uint32_t rounding_bias{ 0x7FFFU + (uint32_t{bits_of_float >> 16} & 1U) };
