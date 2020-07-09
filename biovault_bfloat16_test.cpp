@@ -16,6 +16,8 @@
 
 // Initial author: Niels Dekker (LKEB)
 
+// The file to be tested. Included twice here, to check its include guards!
+#include "biovault_bfloat16.h"
 #include "biovault_bfloat16.h"
 
 // GoogleTest header file:
