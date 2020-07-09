@@ -1,3 +1,6 @@
+#ifndef BIOVAULT_BFLOAT16_H_INCLUDE_GUARD
+#define BIOVAULT_BFLOAT16_H_INCLUDE_GUARD
+
 /*******************************************************************************
 * Copyright 2020 LKEB, Leiden University Medical Center
 *
@@ -171,3 +174,5 @@ namespace biovault {
 	static_assert(sizeof(bfloat16_t) == 2, "bfloat16_t must be 2 bytes");
 
 }
+
+#endif
