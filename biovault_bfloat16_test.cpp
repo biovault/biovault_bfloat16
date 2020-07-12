@@ -370,6 +370,37 @@ GTEST_TEST(bfloat16, RawBitsOfInfinityConvertToCorrespondingFloat)
 }
 
 
+GTEST_TEST(bfloat16, RawBitsOfNanConvertToNanFloat)
+{
+	// From Wikipedia:
+	//
+	// Just as in IEEE 754, NaN values are represented with either sign bit, all
+	// 8 exponent bits set (FF hex) and not all significand bits zero. Explicitly,
+	//
+	//   val    s_exponent_signcnd
+	//   +NaN = 0_11111111_klmnopq
+	//   -NaN = 1_11111111_klmonpq
+	//
+	// where at least one of k, l, m, n, o, p, or q is 1.
+	//
+	// Source: https://en.wikipedia.org/wiki/Bfloat16_floating-point_format#Not_a_Number
+
+	constexpr std::uint16_t exponent_bits{ 0b0'11111111'0000000 };
+	constexpr std::uint16_t significand_bits{ 0b1111111 };
+
+	for (auto bits = uint16_max; bits > 0; --bits)
+	{
+		const bool are_all_exponent_bits_set = (bits & exponent_bits) == exponent_bits;
+		const bool are_all_significand_bits_zero = (bits & significand_bits) == 0;
+
+		ASSERT_EQ(
+			std::isnan(float{ raw_bits_to_bfloat16(bits)}),
+			are_all_exponent_bits_set && !are_all_significand_bits_zero);
+	}
+	ASSERT_FALSE(std::isnan(float{ raw_bits_to_bfloat16(0) }));
+}
+
+
 GTEST_TEST(bfloat16, RawRoundTrip)
 {
 	constexpr std::uint16_t _15{ std::numeric_limits<std::uint16_t>::digits - 1 };
