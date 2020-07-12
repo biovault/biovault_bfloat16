@@ -59,6 +59,9 @@ namespace
 	using float_limits = std::numeric_limits<float>;
 	using array_of_bytes = std::array<std::uint8_t, sizeof(float)>;
 
+	constexpr auto uint16_max = std::numeric_limits<std::uint16_t>::max();
+
+
 	// Return the four bytes that the specified float consists of.
 	array_of_bytes float_to_array_of_bytes(const float arg)
 	{
@@ -337,7 +340,6 @@ GTEST_TEST(bfloat16, AllowsConstexprConstructionFromRawBits)
 GTEST_TEST(bfloat16, RawBitsRoundTripIsLossless)
 {
 	ASSERT_EQ(get_raw_bits(raw_bits_to_bfloat16(std::uint16_t{})), std::uint16_t{});
-	constexpr auto uint16_max = std::numeric_limits<std::uint16_t>::max();
 
 	for (auto i = uint16_max; i > 0; --i)
 	{
@@ -389,8 +391,6 @@ GTEST_TEST(bfloat16, RawRoundTrip)
 	assert_lossless_roundtrip(zero_float);
 
 	const auto raw_bits_of_minus_zero_bfloat16 = float_to_raw_bits_of_bfloat16(-0.0f);
-
-	constexpr auto uint16_max = std::numeric_limits<std::uint16_t>::max();
 
 	for (auto i = uint16_max; i > 0; --i)
 	{
@@ -471,7 +471,7 @@ GTEST_TEST(bfloat16, ConversionFromIntegerTypesEqualsConversionFromFloat)
 	assert_conversion_from_specified_value_equals_conversion_from_float(std::int64_t{ 0 });
 
 	// And then just test integer types >= 32 bits for values from 65535 down to one:
-	for (auto i = std::numeric_limits<std::uint16_t>::max(); i > 0; --i)
+	for (auto i = uint16_max; i > 0; --i)
 	{
 		assert_conversion_from_specified_value_equals_conversion_from_float(std::int32_t{ i });
 		assert_conversion_from_specified_value_equals_conversion_from_float(std::int64_t{ i });
@@ -505,7 +505,7 @@ GTEST_TEST(bfloat16, AssignmentFromIntegerYieldsSameRawBitsAsConstructionFromInt
 	assert_assignment_yields_same_raw_bits_as_construction_from_value(std::int64_t{ 0 });
 
 	// And then just test integer types >= 32 bits for values from 65535 down to one:
-	for (auto i = std::numeric_limits<std::uint16_t>::max(); i > 0; --i)
+	for (auto i = uint16_max; i > 0; --i)
 	{
 		assert_assignment_yields_same_raw_bits_as_construction_from_value(std::int32_t{ i });
 		assert_assignment_yields_same_raw_bits_as_construction_from_value(std::int64_t{ i });
