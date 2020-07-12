@@ -39,8 +39,6 @@
 //
 // Wikipedia "bfloat16 floating-point format"
 // https://en.wikipedia.org/wiki/Bfloat16_floating-point_format
-// https://en.wikipedia.org/w/index.php?title=Bfloat16_floating-point_format&oldid=933243816
-// current revision, as edited at 19:51, 30 December 2019 (Updating to Intel latest releases).
 //
 // John D. Cook, 15 November 2018,
 // "Comparing bfloat16 range and precision to other 16-bit numbers"
