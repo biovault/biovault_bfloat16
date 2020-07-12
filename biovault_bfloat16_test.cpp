@@ -401,6 +401,18 @@ GTEST_TEST(bfloat16, RawBitsOfNanConvertToNanFloat)
 }
 
 
+GTEST_TEST(bfloat16, MostSignificantRawBitConvertsToSignBitOfFloat)
+{
+	for (auto bits = uint16_max; bits > 0; --bits)
+	{
+		ASSERT_EQ(
+			std::signbit(float{ raw_bits_to_bfloat16(bits) }),
+			(bits & (1U << 15U)) != 0);
+	}
+	ASSERT_FALSE(std::signbit(float{ raw_bits_to_bfloat16(0) }));
+}
+
+
 GTEST_TEST(bfloat16, RawRoundTrip)
 {
 	constexpr std::uint16_t _15{ std::numeric_limits<std::uint16_t>::digits - 1 };
