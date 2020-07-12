@@ -9,8 +9,8 @@ cmake_minimum_required( VERSION 3.17.0 )
 message(STATUS "[${PROJECT_NAME}] CMAKE_VERSION = ${CMAKE_VERSION}")
 message(STATUS "[${PROJECT_NAME}] CMAKE_GENERATOR = ${CMAKE_GENERATOR}")
 
-# C++11
-set(CMAKE_CXX_STANDARD 11)
+# Use C++14, to allow binary literals (among other C++14 features) to be used in the unit tests.
+set(CMAKE_CXX_STANDARD 14)
 
 # No /nologo for Visual C++
 set(CMAKE_VERBOSE_MAKEFILE ON)

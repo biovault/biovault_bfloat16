@@ -346,6 +346,28 @@ GTEST_TEST(bfloat16, RawBitsRoundTripIsLossless)
 }
 
 
+GTEST_TEST(bfloat16, RawBitsOfInfinityConvertToCorrespondingFloat)
+{
+	// From Wikipedia:
+	//
+	// Just as in IEEE 754, positive and negative infinity are represented with
+	// their corresponding sign bits, all 8 exponent bits set (FF hex) and all
+	// significand bits zero. Explicitly,
+	//
+	//   val    s_exponent_signcnd
+	//	 +inf = 0_11111111_0000000
+	//	 -inf = 1_11111111_0000000
+	// 
+	// Source: https://en.wikipedia.org/wiki/Bfloat16_floating-point_format#Positive_and_negative_infinity 
+
+	constexpr auto positive_infinity_bits = 0b0'11111111'0000000;
+	constexpr auto negative_infinity_bits = 0b1'11111111'0000000;
+
+	ASSERT_EQ(float{ raw_bits_to_bfloat16(positive_infinity_bits) }, float_limits::infinity());
+	ASSERT_EQ(float{ raw_bits_to_bfloat16(negative_infinity_bits) }, -float_limits::infinity());
+}
+
+
 GTEST_TEST(bfloat16, RawRoundTrip)
 {
 	constexpr std::uint16_t _15{ std::numeric_limits<std::uint16_t>::digits - 1 };
