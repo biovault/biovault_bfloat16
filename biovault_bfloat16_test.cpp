@@ -401,6 +401,45 @@ GTEST_TEST(bfloat16, RawBitsOfNanConvertToNanFloat)
 }
 
 
+GTEST_TEST(bfloat16, RawBitsOfNormalConvertToNormalFloat)
+{
+	// From Wikipedia:
+	//
+	// -----------------------------------------------------------
+	// |    Exponent   | Significand zero | Significand non-zero
+	// -----------------------------------------------------------
+	// |      00H      |     zero, −0     |   subnormal numbers
+	// | 01H, ..., FEH |          normalized value
+	// |      FFH      |    +/-infinity   | NaN (quiet, signaling)
+	// -----------------------------------------------------------
+	//
+	// Source: https://en.wikipedia.org/wiki/Bfloat16_floating-point_format#Exponent_encoding 
+
+	for (auto bits = uint16_max; bits > 0; --bits)
+	{
+		const auto exponent = (bits >> 7U) & 0xFF;
+		ASSERT_EQ(
+			std::isnormal(float{ raw_bits_to_bfloat16(bits) }),
+			(exponent > 0) && (exponent < 0xFF));
+	}
+	ASSERT_FALSE(std::isnormal(float{ raw_bits_to_bfloat16(0) }));
+}
+
+
+GTEST_TEST(bfloat16, NormalBFloat16ToFloatRoundTripIsLossLess)
+{
+	for (auto bits = uint16_max; bits > 0; --bits)
+	{
+		const float f{ raw_bits_to_bfloat16(bits) };
+
+		if (std::isnormal(f))
+		{
+			ASSERT_EQ(get_raw_bits(biovault::bfloat16_t{ f }), bits);
+		}
+	}
+}
+
+
 GTEST_TEST(bfloat16, MostSignificantRawBitConvertsToSignBitOfFloat)
 {
 	for (auto bits = uint16_max; bits > 0; --bits)
