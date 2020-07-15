@@ -572,6 +572,7 @@ GTEST_TEST(bfloat16, ConversionFromIntegerTypesEqualsConversionFromFloat)
 }
 
 
+#ifndef BIOVAULT_BFLOAT16_TEST_NO_CONVERTING_ASSIGNMENT
 GTEST_TEST(bfloat16, AssignmentFromIntegerYieldsSameRawBitsAsConstructionFromInteger)
 {
 	assert_assignment_yields_same_raw_bits_as_construction_from_value(0);
@@ -628,3 +629,4 @@ GTEST_TEST(bfloat16, AssignmentFromFloatYieldsSameRawBitsAsConstructionFromFloat
 		assert_assignment_yields_same_raw_bits_as_construction_from_value(-f);
 	}
 }
+#endif
