@@ -642,3 +642,19 @@ GTEST_TEST(bfloat16, AssignmentFromFloatYieldsSameRawBitsAsConstructionFromFloat
 	}
 }
 #endif
+
+
+GTEST_TEST(bfloat16, PlusCompoundAssignmentAddsRightToLeft)
+{
+	for (auto x = -1.0f; x <= 1.0f; x += 0.5f)
+	{
+		for (auto y = -1.0f; y <= 1.0f; y += 0.5f)
+		{
+			bfloat16_t left{ x };
+			const bfloat16_t right{ y };
+
+			left += right;
+			ASSERT_EQ(float{ left }, x + y);
+		}
+	}
+}
