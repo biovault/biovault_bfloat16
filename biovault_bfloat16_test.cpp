@@ -320,7 +320,7 @@ GTEST_TEST(bfloat16, Epsilon)
 
 		EXPECT_GT(float{ next_bfloat16 }, 1.0f);
 
-		const biovault::bfloat16_t bfloat16_epsilon{ next_bfloat16 - 1.0f };
+		const biovault::bfloat16_t bfloat16_epsilon{ float{next_bfloat16} - 1.0f };
 
 		EXPECT_GT(float{ bfloat16_epsilon }, float_limits::epsilon());
 		EXPECT_LT(float{ bfloat16_epsilon }, 1.0f);
