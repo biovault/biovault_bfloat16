@@ -186,6 +186,16 @@ namespace
 }
 
 
+GTEST_TEST(bfloat16, ValueInitializedConvertsToPositiveZero)
+{
+	const auto& value_initialized_bfloat16 = bfloat16_t();
+	const float f{ value_initialized_bfloat16 };
+
+	ASSERT_EQ(f, 0.0f);
+	ASSERT_FALSE(std::signbit(f));
+}
+
+
 GTEST_TEST(bfloat16, EightBitWholeNumberRoundTripIsLossless)
 {
 	// bfloat16_t has only 7 bits for its mantissa, but it implicitly has a 1 as the most significant bit.
