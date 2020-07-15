@@ -80,7 +80,13 @@ namespace
 
 	biovault::bfloat16_t raw_bits_to_bfloat16(const std::uint16_t arg)
 	{
+#ifdef BIOVAULT_BFLOAT16_TEST_NO_UINT16_AND_BOOL_CONSTRUCTOR
+		biovault::bfloat16_t result;
+		std::memcpy(&result, &arg, sizeof(arg));
+		return result;
+#else
 		return biovault::bfloat16_t(arg, true);
+#endif
 	}
 
 
@@ -328,13 +334,14 @@ GTEST_TEST(bfloat16, Epsilon)
 	}
 }
 
-
+#ifndef BIOVAULT_BFLOAT16_TEST_NO_UINT16_AND_BOOL_CONSTRUCTOR
 GTEST_TEST(bfloat16, AllowsConstexprConstructionFromRawBits)
 {
 	constexpr biovault::bfloat16_t bfloat16_from_raw_bits(std::uint16_t{}, bool{});
 	const float f = bfloat16_from_raw_bits;
 	EXPECT_EQ(f, 0.0f);
 }
+#endif
 
 
 GTEST_TEST(bfloat16, RawBitsRoundTripIsLossless)
