@@ -33,6 +33,12 @@ resolved by @tensorflower-gardener, commit b04c4e0, Mar 20, 2020: [Flush denorma
 
 * TensorFlow pull request #41070, Jul 4, 2020: [Avoid undefined behavior by union type punning in round_to_bfloat16](https://github.com/tensorflow/tensorflow/pull/41070) (Closed with unmerged commits)
 
-* Eigen merge request #163, Jul 11, 2020: [Allow implicit conversion from bfloat16 to float and double](https://gitlab.com/libeigen/eigen/-/merge_requests/163)
- 
+* Eigen merge request #163, Jul 11, 2020: [Allow implicit conversion from bfloat16 to float and double](https://gitlab.com/libeigen/eigen/-/merge_requests/163) (Merged:
+commit [4ab32e2d](https://gitlab.com/libeigen/eigen/-/commit/4ab32e2de2511746e2108563a43cbbeb1922fbf2)) 
+
+* Eigen merge request #164, Jul 14, 2020: [Avoid undefined behavior by union type punning in float_to_bfloat16_rtne](https://gitlab.com/libeigen/eigen/-/merge_requests/164) (Merged:
+commit [b11f817b](https://gitlab.com/libeigen/eigen/-/commit/b11f817bcff04276f3024d6780f56a137968b81a))
+
+* Eigen merge request #166, Jul 14, 2020: [Faster conversion from integer types to bfloat16](https://gitlab.com/libeigen/eigen/-/merge_requests/166)
+
 * Visual C++ problem 903305, Feb 2, 2020: [Signaling NaN (float, double) becomes quiet NaN when returned from function (both x86 and x64)](https://developercommunity.visualstudio.com/content/problem/903305/signaling-nan-float-double-becomes-quiet-nan-when.html)
