@@ -47,14 +47,14 @@
 
 namespace
 {
-#ifndef HDPS_BFLOAT16_EXHAUSTIVE_TEST
+#ifndef BIOVAULT_BFLOAT16_EXHAUSTIVE_TEST
 #  if defined(NDEBUG)
-#  define HDPS_BFLOAT16_EXHAUSTIVE_TEST 1
+#  define BIOVAULT_BFLOAT16_EXHAUSTIVE_TEST 1
 #  else
-#  define HDPS_BFLOAT16_EXHAUSTIVE_TEST 0
+#  define BIOVAULT_BFLOAT16_EXHAUSTIVE_TEST 0
 #  endif
 #endif
-	constexpr bool exhaustive{ HDPS_BFLOAT16_EXHAUSTIVE_TEST };
+	constexpr bool exhaustive{ BIOVAULT_BFLOAT16_EXHAUSTIVE_TEST };
 
 	using float_limits = std::numeric_limits<float>;
 	using array_of_bytes = std::array<std::uint8_t, sizeof(float)>;
