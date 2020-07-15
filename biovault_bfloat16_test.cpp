@@ -56,6 +56,8 @@ namespace
 #endif
 	constexpr bool exhaustive{ BIOVAULT_BFLOAT16_EXHAUSTIVE_TEST };
 
+	using biovault::bfloat16_t;
+
 	using float_limits = std::numeric_limits<float>;
 	using array_of_bytes = std::array<std::uint8_t, sizeof(float)>;
 
@@ -72,20 +74,20 @@ namespace
 
 
 	// Note: Conversion from 32-bit float to bfloat16 may not be lossless!
-	biovault::bfloat16_t float_to_bfloat16(const float arg)
+	bfloat16_t float_to_bfloat16(const float arg)
 	{
-		return biovault::bfloat16_t(arg);
+		return bfloat16_t(arg);
 	}
 
 
-	biovault::bfloat16_t raw_bits_to_bfloat16(const std::uint16_t arg)
+	bfloat16_t raw_bits_to_bfloat16(const std::uint16_t arg)
 	{
 #ifdef BIOVAULT_BFLOAT16_TEST_NO_UINT16_AND_BOOL_CONSTRUCTOR
-		biovault::bfloat16_t result;
+		bfloat16_t result;
 		std::memcpy(&result, &arg, sizeof(arg));
 		return result;
 #else
-		return biovault::bfloat16_t(arg, true);
+		return bfloat16_t(arg, true);
 #endif
 	}
 
@@ -126,8 +128,8 @@ namespace
 	void assert_conversion_from_specified_value_equals_conversion_from_float(const T value)
 	{
 		ASSERT_EQ(
-			get_raw_bits(biovault::bfloat16_t{ value }),
-			get_raw_bits(biovault::bfloat16_t{ static_cast<float>(value) }));
+			get_raw_bits(bfloat16_t{ value }),
+			get_raw_bits(bfloat16_t{ static_cast<float>(value) }));
 	}
 
 	template <typename T>
@@ -154,10 +156,10 @@ namespace
 	template <typename T>
 	void assert_assignment_yields_same_raw_bits_as_construction_from_value(const T value)
 	{
-		biovault::bfloat16_t bf16;
+		bfloat16_t bf16;
 		// Assignment to be tested:
 		bf16 = value;
-		ASSERT_EQ(get_raw_bits(bf16), get_raw_bits(biovault::bfloat16_t{ value }));
+		ASSERT_EQ(get_raw_bits(bf16), get_raw_bits(bfloat16_t{ value }));
 	}
 
 
@@ -312,21 +314,21 @@ GTEST_TEST(bfloat16, Epsilon)
 	{
 		const auto next_bfloat16 = []
 		{
-			const biovault::bfloat16_t bfloat16_one{ 1 };
+			const bfloat16_t bfloat16_one{ 1 };
 
 			auto f = 0.0f;
 
 			do
 			{
 				f = std::nextafterf(f, 1.0f);
-			} while (biovault::bfloat16_t{ 1.0f + f } <= bfloat16_one);
+			} while (bfloat16_t{ 1.0f + f } <= bfloat16_one);
 
-			return biovault::bfloat16_t{ 1.0f + f };
+			return bfloat16_t{ 1.0f + f };
 		}();
 
 		EXPECT_GT(float{ next_bfloat16 }, 1.0f);
 
-		const biovault::bfloat16_t bfloat16_epsilon{ float{next_bfloat16} - 1.0f };
+		const bfloat16_t bfloat16_epsilon{ float{next_bfloat16} - 1.0f };
 
 		EXPECT_GT(float{ bfloat16_epsilon }, float_limits::epsilon());
 		EXPECT_LT(float{ bfloat16_epsilon }, 1.0f);
@@ -337,7 +339,7 @@ GTEST_TEST(bfloat16, Epsilon)
 #ifndef BIOVAULT_BFLOAT16_TEST_NO_UINT16_AND_BOOL_CONSTRUCTOR
 GTEST_TEST(bfloat16, AllowsConstexprConstructionFromRawBits)
 {
-	constexpr biovault::bfloat16_t bfloat16_from_raw_bits(std::uint16_t{}, bool{});
+	constexpr bfloat16_t bfloat16_from_raw_bits(std::uint16_t{}, bool{});
 	const float f = bfloat16_from_raw_bits;
 	EXPECT_EQ(f, 0.0f);
 }
@@ -441,7 +443,7 @@ GTEST_TEST(bfloat16, NormalBFloat16ToFloatRoundTripIsLossLess)
 
 		if (std::isnormal(f))
 		{
-			ASSERT_EQ(get_raw_bits(biovault::bfloat16_t{ f }), bits);
+			ASSERT_EQ(get_raw_bits(bfloat16_t{ f }), bits);
 		}
 	}
 }
