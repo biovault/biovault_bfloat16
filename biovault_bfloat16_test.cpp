@@ -658,3 +658,20 @@ GTEST_TEST(bfloat16, PlusCompoundAssignmentAddsRightToLeft)
 		}
 	}
 }
+
+
+#ifndef BIOVAULT_BFLOAT16_TEST_NO_PLUS_COMPOUND_ASSIGNMENT_FOR_FLOAT_ARGUMENT
+GTEST_TEST(bfloat16, PlusCompoundAssignmentAllowsAddingDenormal)
+{
+	const bfloat16_t initial_value{ float_limits::min() };
+	constexpr auto denorm = float_limits::min() / 2.0f;
+	auto test_value = initial_value;
+	
+	// The compound assignment to be tested, adding a float to a bfloat16.
+	test_value += denorm;
+
+	// Assert that adding the denormal has made the test value greater than before,
+	// even though a denormal is flushed to zero when directly assigned to a bfloat16. 
+	ASSERT_GT(float{ test_value }, float{ initial_value });
+}
+#endif
