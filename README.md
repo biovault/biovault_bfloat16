@@ -23,22 +23,28 @@ Other consulted implementations: [`tensorflow::bfloat16`](https://github.com/ten
 
 ## Reported related issues:
 
-* oneDNN pull request #649, Feb 10, 2020: [Prevent constructing signaling NaNs and denormals (subnormal floats) by bfloat16_t](https://github.com/oneapi-src/oneDNN/pull/649) (Closed with unmerged commit)
-
 * oneDNN pull request #646, Feb 3, 2020: [Avoid undefined behavior (UB) bfloat16_t by removing type-pun via union](https://github.com/oneapi-src/oneDNN/pull/646) (Closed,
 fixed by Eugene Chereshnev (@echeresh), commit ff67087, Feb 4, 2020: [all: introduce and use utils::bit_cast() for safe type punning](https://github.com/oneapi-src/oneDNN/commit/ff670873307ed66a25a663181d3bff45d3e6469f))
+
+* oneDNN pull request #649, Feb 10, 2020: [Prevent constructing signaling NaNs and denormals (subnormal floats) by bfloat16_t](https://github.com/oneapi-src/oneDNN/pull/649) (Closed with unmerged commit)
+
+* oneDNN pull request #780, Jul 17, 2020: [bfloat16: add operator+=(a) overload for float as argument type](https://github.com/oneapi-src/oneDNN/pull/780) (Merged:
+[common: bfloat16: replace operator+=(bfloat16_t) by operator+=(float)](https://github.com/oneapi-src/oneDNN/commit/d68271b7474f3a7e427d4637cef835592688be52), and
+[gtests: internals: add bfloat16_t tests](https://github.com/oneapi-src/oneDNN/commit/49dcdb1d76bc43c058380f5697b75e2f7f2552a6), committed by Evarist M Fomenko (@emfomenk))
 
 * TensorFlow issue #36514, Feb 6, 2020: [bfloat16 does not flush denormals (subnormal floats) to zero](https://github.com/tensorflow/tensorflow/issues/36514) (Closed,
 resolved by @tensorflower-gardener, commit b04c4e0, Mar 20, 2020: [Flush denormals to +/- 0 when converting float to bfloat16](https://github.com/tensorflow/tensorflow/commit/b04c4e0e4338924d5281626445594a900bd673a6)) 
 
 * TensorFlow pull request #41070, Jul 4, 2020: [Avoid undefined behavior by union type punning in round_to_bfloat16](https://github.com/tensorflow/tensorflow/pull/41070) (Closed with unmerged commits)
 
-* Eigen merge request #163, Jul 11, 2020: [Allow implicit conversion from bfloat16 to float and double](https://gitlab.com/libeigen/eigen/-/merge_requests/163) (Merged:
+* Eigen merge request !163, Jul 11, 2020: [Allow implicit conversion from bfloat16 to float and double](https://gitlab.com/libeigen/eigen/-/merge_requests/163) (Merged:
 commit [4ab32e2d](https://gitlab.com/libeigen/eigen/-/commit/4ab32e2de2511746e2108563a43cbbeb1922fbf2)) 
 
-* Eigen merge request #164, Jul 14, 2020: [Avoid undefined behavior by union type punning in float_to_bfloat16_rtne](https://gitlab.com/libeigen/eigen/-/merge_requests/164) (Merged:
+* Eigen merge request !164, Jul 14, 2020: [Avoid undefined behavior by union type punning in float_to_bfloat16_rtne](https://gitlab.com/libeigen/eigen/-/merge_requests/164) (Merged:
 commit [b11f817b](https://gitlab.com/libeigen/eigen/-/commit/b11f817bcff04276f3024d6780f56a137968b81a))
 
-* Eigen merge request #166, Jul 14, 2020: [Faster conversion from integer types to bfloat16](https://gitlab.com/libeigen/eigen/-/merge_requests/166)
+* Eigen merge request !166, Jul 14, 2020: [Faster conversion from integer types to bfloat16](https://gitlab.com/libeigen/eigen/-/merge_requests/166) (Merged:
+commit [0e1a33a4](https://gitlab.com/libeigen/eigen/-/commit/0e1a33a4617e605fbe93caf1ee51d1ef0f7cc29d)) 
+
 
 * Visual C++ problem 903305, Feb 2, 2020: [Signaling NaN (float, double) becomes quiet NaN when returned from function (both x86 and x64)](https://developercommunity.visualstudio.com/content/problem/903305/signaling-nan-float-double-becomes-quiet-nan-when.html)
