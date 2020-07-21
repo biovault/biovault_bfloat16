@@ -161,11 +161,6 @@ namespace biovault {
 			return *this;
 		}
 
-		bfloat16_t& operator+=(const bfloat16_t a) {
-			(*this) = bfloat16_t{ float{*this} + float{a} };
-			return *this;
-		}
-
 		friend BIOVAULT_BFLOAT16_CONSTEXPR uint16_t get_raw_bits(const bfloat16_t&);
 	};
 
