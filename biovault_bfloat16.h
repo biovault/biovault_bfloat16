@@ -140,6 +140,7 @@ namespace biovault {
 		}
 
 
+		// NOLINTNEXTLINE Allow implicit conversion to float, because it is lossless.
 		operator float() const {
 			// Implementation originally from:
 			// https://github.com/oneapi-src/oneDNN/blob/v1.5/src/cpu/bfloat16.cpp#L75-L76
