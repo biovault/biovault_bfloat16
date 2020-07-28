@@ -45,6 +45,13 @@
 // https://www.johndcook.com/blog/2018/11/15/bfloat16
 
 
+// This biovault_bfloat16_test.cpp should be compatible with biovault_bfloat16.h
+// version 1.0.x for x >= 1.
+static_assert(BIOVAULT_BFLOAT16_MAJOR_VERSION == 1, "Major version check");
+static_assert(BIOVAULT_BFLOAT16_MINOR_VERSION == 0, "Minor version check");
+static_assert(BIOVAULT_BFLOAT16_PATCH_VERSION >= 1, "Patch version check");
+
+
 namespace
 {
 #ifndef BIOVAULT_BFLOAT16_EXHAUSTIVE_TEST

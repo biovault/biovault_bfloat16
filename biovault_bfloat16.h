@@ -29,6 +29,15 @@
 #include <cstring>
 #include <type_traits> // For enable_if, is_integral, and is_pod.
 
+
+// For a tagged version of the biovault_bfloat16 repository, having tag name
+// "v" <major> "." <minor> "." <patch>, the following macro defines should
+// match that tag:
+#define BIOVAULT_BFLOAT16_MAJOR_VERSION 1
+#define BIOVAULT_BFLOAT16_MINOR_VERSION 0
+#define BIOVAULT_BFLOAT16_PATCH_VERSION 1
+
+
 #ifdef _MSC_VER
 #	if _MSC_VER < 1900
 	// Before Visual Studio 2015, Visual C++ did not yet support constexpr
