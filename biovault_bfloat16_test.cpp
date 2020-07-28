@@ -360,9 +360,9 @@ GTEST_TEST(bfloat16, RawBitsRoundTripIsLossless)
 {
 	ASSERT_EQ(get_raw_bits(raw_bits_to_bfloat16(std::uint16_t{})), std::uint16_t{});
 
-	for (auto i = uint16_max; i > 0; --i)
+	for (auto bits = uint16_max; bits > 0; --bits)
 	{
-		ASSERT_EQ(get_raw_bits(raw_bits_to_bfloat16(i)), i);
+		ASSERT_EQ(get_raw_bits(raw_bits_to_bfloat16(bits)), bits);
 	}
 }
 
@@ -493,29 +493,29 @@ GTEST_TEST(bfloat16, RawRoundTrip)
 
 	const auto raw_bits_of_minus_zero_bfloat16 = float_to_raw_bits_of_bfloat16(-0.0f);
 
-	for (auto i = uint16_max; i > 0; --i)
+	for (auto bits = uint16_max; bits > 0; --bits)
 	{
-		SCOPED_TRACE(std::to_string(i));
-		const auto initial_bfloat16 = raw_bits_to_bfloat16(i);
+		SCOPED_TRACE(std::to_string(bits));
+		const auto initial_bfloat16 = raw_bits_to_bfloat16(bits);
 		const float f{ initial_bfloat16 };
 		const auto float_category = std::fpclassify(f);
 
-		if ((i & ~_32768) < _128)
+		if ((bits & ~_32768) < _128)
 		{
-			if (i == _32768)
+			if (bits == _32768)
 			{
-				// i has the raw bits of minus zero.
+				// 'bits' has the raw bits of minus zero.
 				ASSERT_EQ(float_category, FP_ZERO);
 				ASSERT_TRUE(std::signbit(f));
 				assert_lossless_roundtrip(f);
 			}
 			else
 			{
-				// i has the raw bits of a denormal.
+				// 'bits' has the raw bits of a denormal.
 				ASSERT_EQ(float_category, FP_SUBNORMAL);
 
-				// In this case, i -> bfloat16 -> float -> bfloat16 yields either +0.0f or -0.0f.
-				EXPECT_EQ(float_to_raw_bits_of_bfloat16(f), (i < _128) ? std::uint16_t{} : raw_bits_of_minus_zero_bfloat16);
+				// In this case, bits -> bfloat16 -> float -> bfloat16 yields either +0.0f or -0.0f.
+				EXPECT_EQ(float_to_raw_bits_of_bfloat16(f), (bits < _128) ? std::uint16_t{} : raw_bits_of_minus_zero_bfloat16);
 			}
 		}
 		else
@@ -526,10 +526,10 @@ GTEST_TEST(bfloat16, RawRoundTrip)
 			ASSERT_EQ(std::fpclassify(round_tripped_float), float_category);
 			ASSERT_EQ(std::signbit(round_tripped_float), std::signbit(f));
 
-			if (((i >= _32641) && (i <= _32703)) ||
-				((i >= _65409) && (i <= _65471)))
+			if (((bits >= _32641) && (bits <= _32703)) ||
+				((bits >= _65409) && (bits <= _65471)))
 			{
-				// i has the raw bits of a signaling NaN. In this case, the round-trip
+				// 'bits' has the raw bits of a signaling NaN. In this case, the round-trip
 				// may not be lossless, as a signaling NaN may change into a quiet NaN
 				// when returned by the float() conversion operator of bfloat_t
 				// (depending on compiler version and compilation flags).
@@ -537,15 +537,15 @@ GTEST_TEST(bfloat16, RawRoundTrip)
 				// anyway, as taken care of by the explicit `bfloat16_t::bfloat16_t(float)`.
 
 				ASSERT_EQ(float_category, FP_NAN);
-				ASSERT_EQ(get_raw_bits(roundtripped_bfloat), i + _64);
+				ASSERT_EQ(get_raw_bits(roundtripped_bfloat), bits + _64);
 			}
 			else
 			{
 				ASSERT_TRUE((float_category == FP_NAN) || (float_category == FP_NORMAL) || (float_category == FP_INFINITE));
 
-				// For this i, round-trips are lossless.
+				// For this 'bits', round-trips are lossless.
 				EXPECT_EQ(float_to_array_of_bytes(round_tripped_float), float_to_array_of_bytes(f));
-				EXPECT_EQ(float_to_raw_bits_of_bfloat16(f), i);
+				EXPECT_EQ(float_to_raw_bits_of_bfloat16(f), bits);
 			}
 		}
 	}
