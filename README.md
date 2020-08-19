@@ -34,7 +34,10 @@ fixed by Eugene Chereshnev (@echeresh), commit ff67087, Feb 4, 2020: [all: intro
 [common: bfloat16: replace operator+=(bfloat16_t) by operator+=(float)](https://github.com/oneapi-src/oneDNN/commit/d68271b7474f3a7e427d4637cef835592688be52), and
 [gtests: internals: add bfloat16_t tests](https://github.com/oneapi-src/oneDNN/commit/49dcdb1d76bc43c058380f5697b75e2f7f2552a6), committed by Evarist M Fomenko (@emfomenk))
 
-* oneDNN pull request #790, Jul 25, 2020: [all: bfloat16: initialize variables by T{} instead of integer constant 0](https://github.com/oneapi-src/oneDNN/pull/790)
+* oneDNN pull request #790, Jul 25, 2020: [all: bfloat16: initialize variables by T{} instead of integer constant 0](https://github.com/oneapi-src/oneDNN/pull/790) (Closed with unmerged commits)
+
+* oneDNN pull request #801, Aug 10, 2020: [bfloat16: faster conversion and assignment from integer types](https://github.com/oneapi-src/oneDNN/pull/801) (Merged by Evarist M Fomenko (@emfomenk): commit
+[073e346](https://github.com/oneapi-src/oneDNN/commit/073e3466cf82ddfd39c4be7ce21c814697b16565)
 
 * TensorFlow issue #36514, Feb 6, 2020: [bfloat16 does not flush denormals (subnormal floats) to zero](https://github.com/tensorflow/tensorflow/issues/36514) (Closed,
 resolved by @tensorflower-gardener, commit b04c4e0, Mar 20, 2020: [Flush denormals to +/- 0 when converting float to bfloat16](https://github.com/tensorflow/tensorflow/commit/b04c4e0e4338924d5281626445594a900bd673a6)) 
