@@ -20,7 +20,7 @@
 // Adapted from the original dnnl::impl::bfloat16_t implementation of
 // oneAPI Deep Neural Network Library (oneDNN), by Intel Corporation,
 // which is licensed under the Apache License, Version 2.0:
-// https://github.com/oneapi-src/oneDNN/blob/v1.5/LICENSE
+// https://github.com/oneapi-src/oneDNN/blob/v1.7/LICENSE
 
 #include <array>
 #include <cstdint> // For uint16_t and uint32_t.
@@ -62,7 +62,7 @@ namespace biovault {
 		uint16_t raw_bits_;
 
 		// bit_cast implementation originally from oneDNN:
-		// https://github.com/oneapi-src/oneDNN/blob/v1.5/src/common/bit_cast.hpp
+		// https://github.com/oneapi-src/oneDNN/blob/v1.7/src/common/bit_cast.hpp
 		//
 		// Returns a value of type T by reinterpretting the representation of the input
 		// value (part of C++20).
@@ -91,7 +91,7 @@ namespace biovault {
 		// Allows specifying a bfloat16 by its raw bits. Equivalent to C++20
 		// std::bit_cast<bfloat16_t>(r) (which is more generic, of course.)
 		// Originally from oneDNN:
-		// https://github.com/oneapi-src/oneDNN/blob/v1.5/src/common/bfloat16.hpp#L34
+		// https://github.com/oneapi-src/oneDNN/blob/v1.7/src/common/bfloat16.hpp#L34
 		BIOVAULT_BFLOAT16_CONSTEXPR bfloat16_t(const uint16_t r, bool) : raw_bits_(r) {}
 
 		// Supports narrowing (lossy) conversion from 32-bit float to bfloat16.
@@ -104,7 +104,7 @@ namespace biovault {
 #endif
 			bfloat16_t(const float f) {
 			// Implementation originally from oneDNN:
-			// https://github.com/oneapi-src/oneDNN/blob/v1.5/src/cpu/bfloat16.cpp#L47-L69
+			// https://github.com/oneapi-src/oneDNN/blob/v1.7/src/cpu/bfloat16.cpp#L47-L69
 			auto iraw = bit_cast<std::array<uint16_t, 2>>(f);
 			switch (std::fpclassify(f)) {
 			case FP_SUBNORMAL:
@@ -152,7 +152,7 @@ namespace biovault {
 		// NOLINTNEXTLINE Allow implicit conversion to float, because it is lossless.
 		operator float() const {
 			// Implementation originally from:
-			// https://github.com/oneapi-src/oneDNN/blob/v1.5/src/cpu/bfloat16.cpp#L75-L76
+			// https://github.com/oneapi-src/oneDNN/blob/v1.7/src/cpu/bfloat16.cpp#L75-L76
 			std::array<uint16_t, 2> iraw = {{0, raw_bits_}};
 			return bit_cast<float>(iraw);
 		}
