@@ -3,9 +3,9 @@
 A `bfloat16` implementation for projects of [BioVault](https://github.com/biovault) (Biomedical Visual Analytics Unit LUMC - TU Delft)
 
 Originally based upon `dnnl::impl::bfloat16_t` from the [Deep Neural Network Library (DNNL)](https://github.com/intel/mkl-dnn) of Intel Corporation.
-Updated to version 1.5 of their library, which has been renamed to [oneAPI Deep Neural Network Library (oneDNN)](https://github.com/oneapi-src/oneDNN).
-* https://github.com/oneapi-src/oneDNN/blob/v1.5/src/cpu/bfloat16.cpp
-* https://github.com/oneapi-src/oneDNN/blob/v1.5/src/common/bfloat16.hpp
+Updated to version 1.7 of their library, which has been renamed to [oneAPI Deep Neural Network Library (oneDNN)](https://github.com/oneapi-src/oneDNN).
+* https://github.com/oneapi-src/oneDNN/blob/v1.7/src/cpu/bfloat16.cpp
+* https://github.com/oneapi-src/oneDNN/blob/v1.7/src/common/bfloat16.hpp
 
 Other consulted implementations: [`tensorflow::bfloat16`](https://github.com/tensorflow/tensorflow/tree/v2.2.0/tensorflow/core/lib/bfloat16) and [`Eigen::bfloat16`](https://gitlab.com/libeigen/eigen/-/blob/master/Eigen/src/Core/arch/Default/BFloat16.h)
 
