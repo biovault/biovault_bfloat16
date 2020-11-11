@@ -1,10 +1,10 @@
 # Niels Dekker, LKEB, Leiden University Medical Center, 2020
 
-project(biovault_bfloat16)
-
 # At the moment of writing (July 2020), the Microsoft-hosted VM ubuntu-18.04
 # still runs CMake 3.17.0 on Azure Pipelines.
 cmake_minimum_required( VERSION 3.17.0 )
+
+project(biovault_bfloat16)
 
 message(STATUS "[${PROJECT_NAME}] CMAKE_VERSION = ${CMAKE_VERSION}")
 message(STATUS "[${PROJECT_NAME}] CMAKE_GENERATOR = ${CMAKE_GENERATOR}")
