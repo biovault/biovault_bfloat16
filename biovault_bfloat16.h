@@ -40,7 +40,7 @@
 
 #ifdef _MSC_VER
 #	if _MSC_VER < 1900
-	// Before Visual Studio 2015, Visual C++ did not yet support constexpr
+// Before Visual Studio 2015, Visual C++ did not yet support constexpr
 #	define BIOVAULT_BFLOAT16_CONSTEXPR
 #	endif
 #endif
@@ -84,6 +84,15 @@ namespace biovault {
 			std::memcpy(&t, &u, sizeof(U));
 			return t;
 		}
+
+		// Converts the 32 bits of a normal float or zero to the bits of a bfloat16.
+		static BIOVAULT_BFLOAT16_CONSTEXPR uint16_t convert_bits_of_normal_or_zero(
+			const uint32_t bits) {
+			return uint32_t{
+							bits + uint32_t {0x7FFFU + (uint32_t {bits >> 16} &1U)} }
+			>> 16;
+		}
+
 
 	public:
 		bfloat16_t() = default;
@@ -136,37 +145,40 @@ namespace biovault {
 		// Note: This constructor is "explicit" by default, but can be adjusted
 		// to allow implicit conversion to bfloat16_t by defining the macro
 		// BIOVAULT_BFLOAT16_CONVERTING_CONSTRUCTORS.
-		template <typename T, typename = typename std::enable_if<std::is_integral<T>::value>::type>
+		template <typename IntegerType,
+			typename SFINAE = typename std::enable_if<
+			std::is_integral<IntegerType>::value>::type>
 #ifndef BIOVAULT_BFLOAT16_CONVERTING_CONSTRUCTORS
-		explicit
+			explicit
 #endif
-			bfloat16_t(const T i) {
-			const auto bits_of_float = bit_cast<uint32_t>(static_cast<float>(i));
-			// round to nearest even and truncate
-			const uint32_t rounding_bias{ 0x7FFFU + (uint32_t{bits_of_float >> 16} & 1U) };
-			const uint32_t raw_32_bits{ bits_of_float + rounding_bias };
-			raw_bits_ = (raw_32_bits >> 16);
-		}
-
-
-		// NOLINTNEXTLINE Allow implicit conversion to float, because it is lossless.
-		operator float() const {
-			// Implementation originally from:
-			// https://github.com/oneapi-src/oneDNN/blob/v1.7/src/cpu/bfloat16.cpp#L75-L76
-			std::array<uint16_t, 2> iraw = {{0, raw_bits_}};
-			return bit_cast<float>(iraw);
-		}
-
-		template <typename T, typename = typename std::enable_if<std::is_integral<T>::value>::type>
-		bfloat16_t& operator=(const T i) {
-			return (*this) = bfloat16_t{ i };
+			bfloat16_t(const IntegerType i)
+			: raw_bits_{ convert_bits_of_normal_or_zero(
+				bit_cast<uint32_t>(static_cast<float>(i))) }
+		{
 		}
 
 		bfloat16_t& operator=(const float f) {
 			return (*this) = bfloat16_t{ f };
 		}
 
-		bfloat16_t &operator+=(const float a) {
+		template <typename IntegerType,
+			typename SFINAE = typename std::enable_if<
+			std::is_integral<IntegerType>::value>::type>
+			bfloat16_t& operator=(const IntegerType i) {
+			// Call the converting constructor that is optimized for integer types,
+			// followed by the fast defaulted move-assignment operator.
+			return (*this) = bfloat16_t{ i };
+		}
+
+		// NOLINTNEXTLINE Allow implicit conversion to float, because it is lossless.
+		operator float() const {
+			// Implementation originally from:
+			// https://github.com/oneapi-src/oneDNN/blob/v1.7/src/cpu/bfloat16.cpp#L75-L76
+			std::array<uint16_t, 2> iraw = { {0, raw_bits_} };
+			return bit_cast<float>(iraw);
+		}
+
+		bfloat16_t& operator+=(const float a) {
 			(*this) = bfloat16_t{ float{*this} + a };
 			return *this;
 		}
