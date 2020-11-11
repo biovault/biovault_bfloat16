@@ -219,24 +219,24 @@ GTEST_TEST(bfloat16, EightBitWholeNumberRoundTripIsLossless)
 GTEST_TEST(bfloat16, PowerOfTwoRoundTripIsLossless)
 {
 	// For exponent = 128 down to one.
-	for (std::uint8_t exponent{ std::uint8_t{1u} << std::uint8_t{7u} }; exponent > 0; --exponent)
+	for (float exponent{ 1 << 7 }; exponent > 0; --exponent)
 	{
 		SCOPED_TRACE(std::string("exponent") + std::to_string(exponent));
-		assert_lossless_roundtrip(std::pow(2.0f, int{ exponent }));
+		assert_lossless_roundtrip(std::pow(2.0f, exponent));
 	}
 
-	// "The minimum positive normal value is 2 ^ −126..."
+	// "The minimum positive normal value is 2 ^ -126"
 	// https://en.wikipedia.org/wiki/Bfloat16_floating-point_format#Exponent_encoding
 
-	constexpr auto abs_exponent_of_minimum_positive = (std::uint8_t{ 1u } << std::uint8_t{ 7u }) - std::uint8_t{ 2 };
+	constexpr auto exponent_of_minimum_positive_normal = -126.0f;
 
-	ASSERT_EQ(std::pow(2.0f, -int{ abs_exponent_of_minimum_positive }), float_limits::min());
+	ASSERT_EQ(std::pow(2.0f, exponent_of_minimum_positive_normal), float_limits::min());
 
 	// For exponent = -126 up to minus one.
-	for (std::uint8_t abs_exponent{ abs_exponent_of_minimum_positive }; abs_exponent > 0; --abs_exponent)
+	for (auto exponent = exponent_of_minimum_positive_normal; exponent < 0; ++exponent)
 	{
-		SCOPED_TRACE(std::string("exponent -") + std::to_string(abs_exponent));
-		assert_lossless_roundtrip(std::pow(2.0f, -int{ abs_exponent }));
+		SCOPED_TRACE(std::string("exponent -") + std::to_string(exponent));
+		assert_lossless_roundtrip(std::pow(2.0f, exponent));
 	}
 }
 
