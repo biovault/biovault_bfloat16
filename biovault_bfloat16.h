@@ -27,7 +27,7 @@
 #include <cmath>
 #include <cfloat>
 #include <cstring>
-#include <type_traits> // For enable_if, is_integral, and is_pod.
+#include <type_traits> // For enable_if, is_integral, is_trivially_copyable, and is_pod.
 
 
 // For a tagged version of the biovault_bfloat16 repository, having tag name
@@ -35,7 +35,7 @@
 // match that tag:
 #define BIOVAULT_BFLOAT16_MAJOR_VERSION 1
 #define BIOVAULT_BFLOAT16_MINOR_VERSION 0
-#define BIOVAULT_BFLOAT16_PATCH_VERSION 1
+#define BIOVAULT_BFLOAT16_PATCH_VERSION 2
 
 
 #ifdef _MSC_VER
@@ -75,10 +75,16 @@ namespace biovault {
 		template <typename T, typename U>
 		static T bit_cast(const U& u) {
 			static_assert(sizeof(T) == sizeof(U), "Bit-casting must preserve size.");
+#if __cplusplus >= 202002L
+    			// C++20 (and later) code
+			static_assert(std::is_trivially_copyable<T>::value, "T must be trivially copyable.");
+			static_assert(std::is_trivially_copyable<U>::value, "U must be trivially copyable.");
+#else
 			// Use std::is_pod as older GNU versions do not support
 			// std::is_trivially_copyable.
 			static_assert(std::is_pod<T>::value, "T must be trivially copyable.");
 			static_assert(std::is_pod<U>::value, "U must be trivially copyable.");
+#endif
 
 			T t;
 			std::memcpy(&t, &u, sizeof(U));
