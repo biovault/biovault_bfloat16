@@ -15,9 +15,9 @@ jobs:
       .\build\Release\biovault_bfloat16_test.exe
     displayName: $(Agent.JobName) run
 
-- job: Ubuntu1804_GCC_7_4_0
+- job: Ubuntu
   pool:
-    vmImage: 'ubuntu-18.04'
+    vmImage: 'ubuntu-20.04'
   steps:
   - script: |
       mkdir build
@@ -30,9 +30,9 @@ jobs:
       ./build/biovault_bfloat16_test
     displayName: $(Agent.JobName) run
    
-- job: macOS1015_AppleClang
+- job: MacOS
   pool:
-    vmImage: 'macOS-10.15'
+    vmImage: 'macOS-13'
   steps:
   - script: |
       mkdir build
